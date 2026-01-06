@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OmniStream Zenith</title>
+    <title>RDDTV</title>
     <meta name="theme-color" content="#000000">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+    <meta name="description" content="The Final Reddit Experience">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Assets -->
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
+
+    <!-- Fonts & Libraries -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Config -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,11 +28,11 @@
                         dark: { bg: '#000000', surface: '#09090b', border: '#1f1f22', highlight: '#27272a' }
                     },
                     animation: { 
-                        'slide': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                        'enter': 'enter 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'pop': 'pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                     },
                     keyframes: { 
-                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        enter: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
                         pop: { '0%': { transform: 'scale(0.95)' }, '100%': { transform: 'scale(1)' } }
                     }
                 }
@@ -46,7 +50,7 @@
         .snap-y-mandatory { scroll-snap-type: y mandatory; }
         .snap-center { scroll-snap-align: center; }
         
-        /* Dynamic Brand */
+        /* Branding */
         .text-brand { color: var(--brand); }
         .bg-brand { background-color: var(--brand); }
         .border-brand { border-color: var(--brand); }
@@ -56,59 +60,65 @@
         .skeleton { background: linear-gradient(90deg, #09090b 25%, #1f1f22 50%, #09090b 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* Premium Switch */
-        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+        /* Switches */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #27272a; transition: .3s; border-radius: 34px; border: 1px solid #3f3f46; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--brand); border-color: var(--brand); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #27272a; transition: .3s; border-radius: 99px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        input:checked + .slider { background-color: var(--brand); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .search-container:focus-within { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+        /* Search Box Perfection */
+        .search-container { transition: all 0.3s ease; }
+        .search-container:focus-within { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand), 0 0 15px rgba(255, 69, 0, 0.2); background-color: #09090b; }
+        input, select, textarea { font-size: 16px !important; }
         
-        /* Text Content Fixes */
-        .md-content { font-size: 0.95rem; line-height: 1.6; color: #d4d4d8; }
-        .md-content p { margin-bottom: 0.75em; }
+        /* Markdown / Comments */
+        .md-content { font-size: 0.95rem; line-height: 1.5; color: #d4d4d8; overflow-wrap: break-word; }
+        .md-content p { margin-bottom: 0.5em; }
         .md-content a { color: var(--brand); text-decoration: none; font-weight: 500; }
         .md-content blockquote { border-left: 3px solid var(--brand); padding-left: 12px; margin: 8px 0; font-style: italic; color: #a1a1aa; }
-        .md-content ul, .md-content ol { padding-left: 20px; margin-bottom: 0.75em; list-style: disc; }
+        .md-content ul { list-style-type: disc; padding-left: 20px; margin-bottom: 0.5em; }
+        .md-content h1, .md-content h2 { font-weight: 700; margin-top: 0.5em; color: white; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-gray-200">
 
-    <!-- Navbar -->
-    <header class="bg-black/80 backdrop-blur-xl border-b border-dark-border z-40 relative">
+    <!-- Header -->
+    <header class="bg-black/80 backdrop-blur-xl border-b border-dark-border z-[50] relative">
         <div class="max-w-3xl mx-auto px-4 py-3">
             <div class="flex items-center gap-3 mb-3">
-                <div class="text-brand text-2xl cursor-pointer hover:rotate-12 transition-transform shrink-0 active:scale-90" onclick="resetApp()">
+                <div class="text-brand text-2xl cursor-pointer hover:rotate-12 transition-transform shrink-0 active:scale-90" onclick="App.reset()">
                     <i class="fa-brands fa-reddit-alien"></i>
                 </div>
                 
-                <div class="relative flex-1 group z-50">
-                    <div class="search-container relative flex items-center bg-dark-surface border border-dark-border rounded-xl transition-all duration-200 overflow-hidden group-hover:border-white/20">
+                <!-- Improved Search Box -->
+                <div class="relative flex-1 group z-[60]">
+                    <div class="search-container relative flex items-center bg-dark-surface border border-dark-border rounded-xl transition-all duration-200 overflow-hidden">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-gray-500 text-sm pointer-events-none"></i>
-                        <input type="text" id="searchInput" placeholder="Search communities..." class="w-full bg-transparent py-2.5 pl-10 pr-10 text-base text-white placeholder-gray-600 focus:outline-none font-medium" autocomplete="off">
-                        <button id="clearSearch" class="hidden absolute right-0 top-0 bottom-0 px-3 text-gray-500 hover:text-white transition"><i class="fa-solid fa-circle-xmark"></i></button>
+                        <input type="text" id="searchInput" placeholder="Search communities..." class="w-full bg-transparent py-2.5 pl-10 pr-10 text-base text-white placeholder-gray-500 focus:outline-none font-medium" autocomplete="off">
+                        <button id="clearSearch" class="hidden absolute right-0 top-0 bottom-0 px-3 text-gray-500 hover:text-white transition active:scale-90"><i class="fa-solid fa-circle-xmark"></i></button>
                     </div>
-                    <div id="searchDropdown" class="hidden absolute top-full mt-2 left-0 right-0 bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden animate-slide origin-top ring-1 ring-white/5">
+                    <div id="searchDropdown" class="hidden absolute top-full mt-2 left-0 right-0 bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden animate-enter origin-top ring-1 ring-white/5 backdrop-blur-xl">
                         <div id="searchContent" class="max-h-[60vh] overflow-y-auto no-scrollbar"></div>
                     </div>
                 </div>
 
-                <button onclick="toggleSettings()" class="w-10 h-10 rounded-xl bg-dark-surface border border-dark-border text-gray-400 hover:text-white hover:bg-dark-highlight transition flex items-center justify-center active:scale-95 shrink-0">
+                <button onclick="UI.toggleSettings()" class="w-10 h-10 rounded-xl bg-dark-surface border border-dark-border text-gray-400 hover:text-white hover:bg-dark-highlight transition flex items-center justify-center active:scale-95 shrink-0">
                     <i class="fa-solid fa-sliders"></i>
                 </button>
             </div>
 
+            <!-- Controls -->
             <div class="flex items-center justify-between gap-2">
                 <div class="flex gap-2 overflow-x-auto no-scrollbar items-center">
                     <div class="relative group">
                         <select id="sortSelect" class="appearance-none bg-dark-surface border border-dark-border text-xs font-bold px-3 py-2 rounded-lg text-gray-300 focus:outline-none cursor-pointer hover:border-gray-500 pr-7 transition-colors">
-                            <option value="hot">🔥 Hot</option><option value="top">🏆 Top</option><option value="new">✨ New</option><option value="controversial">⚠️ Controversial</option><option value="saved">💾 Saved</option>
+                            <option value="hot">Hot</option><option value="top">Top</option><option value="new"> New</option><option value="controversial">Controversial</option><option value="saved">Saved</option>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 pointer-events-none"></i>
                     </div>
-                    <div id="timeFilter" class="relative hidden group animate-slide">
+                    <div id="timeFilter" class="relative hidden group animate-enter">
                         <select id="timeSelect" class="appearance-none bg-dark-surface border border-dark-border text-xs font-bold px-3 py-2 rounded-lg text-gray-300 focus:outline-none cursor-pointer hover:border-gray-500 pr-7 transition-colors">
                             <option value="all">All Time</option><option value="year">Year</option><option value="month">Month</option><option value="week">Week</option><option value="day">Today</option>
                         </select>
@@ -117,9 +127,9 @@
                 </div>
                 
                 <div class="flex bg-dark-surface rounded-lg p-1 border border-dark-border shrink-0">
-                    <button onclick="switchView('feed')" id="btn-feed" class="p-1.5 px-3 rounded text-xs transition-all bg-dark-highlight text-white shadow-sm"><i class="fa-solid fa-bars"></i></button>
-                    <button onclick="switchView('grid')" id="btn-grid" class="p-1.5 px-3 rounded text-xs transition-all text-gray-500 hover:text-white"><i class="fa-solid fa-border-all"></i></button>
-                    <button onclick="switchView('reels')" id="btn-reels" class="p-1.5 px-3 rounded text-xs transition-all text-gray-500 hover:text-brand"><i class="fa-solid fa-play"></i></button>
+                    <button onclick="App.setView('feed')" id="btn-feed" class="p-1.5 px-3 rounded text-xs transition-all bg-dark-highlight text-white shadow-sm"><i class="fa-solid fa-bars"></i></button>
+                    <button onclick="App.setView('grid')" id="btn-grid" class="p-1.5 px-3 rounded text-xs transition-all text-gray-500 hover:text-white"><i class="fa-solid fa-border-all"></i></button>
+                    <button onclick="App.setView('reels')" id="btn-reels" class="p-1.5 px-3 rounded text-xs transition-all text-gray-500 hover:text-brand"><i class="fa-solid fa-play"></i></button>
                 </div>
             </div>
         </div>
@@ -127,20 +137,19 @@
 
     <!-- Main -->
     <main id="main" class="flex-1 overflow-y-auto scroll-smooth relative bg-black">
-        <div id="welcome" class="flex flex-col items-center justify-center pt-24 px-6 opacity-80 animate-slide">
+        <div id="welcome" class="flex flex-col items-center justify-center pt-24 px-6 opacity-80 animate-enter">
             <div class="w-20 h-20 bg-dark-surface rounded-2xl flex items-center justify-center mb-6 border border-dark-border shadow-xl ring-1 ring-white/5 hover:scale-105 transition duration-500">
                 <i class="fa-brands fa-reddit-alien text-5xl text-brand drop-shadow-lg"></i>
             </div>
-            <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">OmniStream</h1>
-            <p class="text-gray-500 text-sm mb-8 text-center max-w-xs font-medium">Zenith Edition</p>
+            <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">RDDTV</h1>
             <div class="flex flex-wrap justify-center gap-2">
-                <button onclick="triggerSearch('r/pics')" class="px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-xs font-bold hover:border-brand hover:text-brand transition active:scale-95">📸 r/pics</button>
-                <button onclick="triggerSearch('r/design')" class="px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-xs font-bold hover:border-brand hover:text-brand transition active:scale-95">🎨 r/design</button>
-                <button onclick="triggerSearch('u/shitty_watercolour')" class="px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-xs font-bold hover:border-brand hover:text-brand transition active:scale-95">🎨 u/User</button>
+                <button onclick="App.search('r/pics')" class="px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-xs font-bold hover:border-brand hover:text-brand transition active:scale-95">r/pics</button>
+                <button onclick="App.search('r/design')" class="px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-xs font-bold hover:border-brand hover:text-brand transition active:scale-95">r/design</button>
+                <button onclick="App.search('u/Sad-Bathroom8500')" class="px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-xs font-bold hover:border-brand hover:text-brand transition active:scale-95">u/Creator_of_this</button>
             </div>
         </div>
 
-        <div id="contextHeader" class="hidden max-w-xl mx-auto px-4 py-6 border-b border-dark-border mb-4 animate-slide"></div>
+        <div id="contextHeader" class="hidden max-w-xl mx-auto px-4 py-6 border-b border-dark-border mb-4 animate-enter"></div>
         <div id="feed" class="max-w-xl mx-auto py-4 px-2 sm:px-0 min-h-[50vh]"></div>
         
         <div id="skeleton" class="hidden max-w-xl mx-auto px-2 space-y-6 py-4">
@@ -150,428 +159,480 @@
         
         <div id="sentinel" class="h-24"></div>
 
-        <div id="savedEmpty" class="hidden flex-col items-center justify-center pt-20 animate-slide">
+        <div id="savedEmpty" class="hidden flex-col items-center justify-center pt-20 animate-enter">
             <i class="fa-regular fa-bookmark text-4xl text-dark-highlight mb-4"></i>
             <p class="text-gray-600 font-medium text-sm">Library is empty.</p>
         </div>
         
-        <footer id="footer" class="hidden py-8 text-center border-t border-dark-border/50 mx-4 mt-8 animate-slide">
+        <footer id="footer" class="hidden py-10 text-center border-t border-dark-border/50 mx-4 mt-8 animate-enter">
             <p class="text-[10px] text-gray-600 uppercase tracking-widest font-bold mb-2">Legal Disclaimer</p>
-            <p class="text-[10px] text-gray-600 leading-relaxed max-w-md mx-auto">OmniStream is an unofficial viewer. Not affiliated with Reddit Inc.</p>
+            <p class="text-[10px] text-gray-600 leading-relaxed max-w-md mx-auto">RDDTV is an unofficial viewer. Not affiliated with Reddit Inc. Content is served via public API.</p>
         </footer>
 
-        <button id="goTop" onclick="scrollToTop()" class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-brand text-white shadow-2xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-30 hover:scale-110 active:scale-90">
+        <button id="goTop" onclick="UI.scrollToTop()" class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-brand text-white shadow-2xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-30 hover:scale-110 active:scale-90">
             <i class="fa-solid fa-arrow-up"></i>
         </button>
     </main>
 
-    <!-- Settings Modal (Restored Glory) -->
-    <div id="settingsModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-dark-surface border border-dark-border w-full max-w-sm rounded-3xl shadow-2xl p-6 transform scale-100 transition-transform ring-1 ring-white/10">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-white tracking-tight">Settings</h3>
-                <button onclick="toggleSettings()" class="w-8 h-8 rounded-full bg-dark-highlight flex items-center justify-center text-gray-400 hover:text-white active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="space-y-6">
-                <!-- Appearance -->
-                <div>
-                    <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-3 ml-1">Appearance</div>
-                    <div class="flex gap-3 justify-between bg-dark-highlight/30 p-2 rounded-xl border border-dark-border">
-                        <button onclick="setTheme('#FF4500')" class="w-8 h-8 rounded-full bg-[#FF4500] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
-                        <button onclick="setTheme('#3b82f6')" class="w-8 h-8 rounded-full bg-[#3b82f6] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
-                        <button onclick="setTheme('#8b5cf6')" class="w-8 h-8 rounded-full bg-[#8b5cf6] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
-                        <button onclick="setTheme('#10b981')" class="w-8 h-8 rounded-full bg-[#10b981] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
-                        <button onclick="setTheme('#ec4899')" class="w-8 h-8 rounded-full bg-[#ec4899] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
-                    </div>
-                </div>
-
-                <!-- Playback -->
-                <div>
-                    <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Playback</div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
-                            <div><div class="text-sm font-semibold text-gray-200">Autoplay</div><div class="text-[10px] text-gray-500">Muted by default</div></div>
-                            <label class="switch"><input type="checkbox" id="set-auto"><span class="slider"></span></label>
-                        </div>
-                        <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
-                            <div><div class="text-sm font-semibold text-gray-200">Loop Videos</div><div class="text-[10px] text-gray-500">Repeat automatically</div></div>
-                            <label class="switch"><input type="checkbox" id="set-loop"><span class="slider"></span></label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Content Filtering -->
-                <div>
-                    <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Content Filtering</div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
-                            <div><div class="text-sm font-semibold text-gray-200">Hide Broken Media</div><div class="text-[10px] text-gray-500">Filter 404/Deleted posts</div></div>
-                            <label class="switch"><input type="checkbox" id="set-broken"><span class="slider"></span></label>
-                        </div>
-                        <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
-                            <div><div class="text-sm font-semibold text-gray-200">Allow NSFW</div><div class="text-[10px] text-gray-500">Show 18+ content</div></div>
-                            <label class="switch"><input type="checkbox" id="set-nsfw"><span class="slider"></span></label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Interface -->
-                <div>
-                    <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Interface</div>
-                    <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
-                        <div><div class="text-sm font-semibold text-gray-200">Nav Buttons</div><div class="text-[10px] text-gray-500">On-screen scroll arrows</div></div>
-                        <label class="switch"><input type="checkbox" id="set-nav"><span class="slider"></span></label>
-                    </div>
-                </div>
-                
-                <button onclick="saveSettings()" class="w-full mt-4 bg-brand hover:opacity-90 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-brand/20 active:scale-95 transform">Apply Changes</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Manual Nav -->
-    <div id="manualNav" class="hidden fixed bottom-20 right-6 flex-col gap-3 z-30 animate-slide">
-        <button onclick="navScroll(-1)" class="w-12 h-12 rounded-full bg-dark-surface/90 backdrop-blur border border-dark-border text-white shadow-lg flex items-center justify-center hover:bg-brand transition active:scale-90"><i class="fa-solid fa-chevron-up"></i></button>
-        <button onclick="navScroll(1)" class="w-12 h-12 rounded-full bg-dark-surface/90 backdrop-blur border border-dark-border text-white shadow-lg flex items-center justify-center hover:bg-brand transition active:scale-90"><i class="fa-solid fa-chevron-down"></i></button>
+    <div id="manualNav" class="hidden fixed bottom-20 right-6 flex-col gap-3 z-30 animate-enter">
+        <button onclick="App.nav(-1)" class="w-12 h-12 rounded-full bg-dark-surface/90 backdrop-blur border border-dark-border text-white shadow-lg flex items-center justify-center hover:bg-brand transition active:scale-90"><i class="fa-solid fa-chevron-up"></i></button>
+        <button onclick="App.nav(1)" class="w-12 h-12 rounded-full bg-dark-surface/90 backdrop-blur border border-dark-border text-white shadow-lg flex items-center justify-center hover:bg-brand transition active:scale-90"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
 
     <!-- Comments -->
-    <div id="commentsModal" class="fixed inset-0 z-50 hidden flex-col justify-end bg-black/80 backdrop-blur-sm transition-all">
-        <div class="bg-dark-surface w-full max-w-xl mx-auto h-[85vh] rounded-t-3xl border-t border-dark-border shadow-2xl flex flex-col animate-slide ring-1 ring-white/10">
+    <div id="commentsModal" class="fixed inset-0 z-[70] hidden flex-col justify-end bg-black/80 backdrop-blur-sm transition-all">
+        <div class="bg-dark-surface w-full max-w-xl mx-auto h-[85vh] rounded-t-3xl border-t border-dark-border shadow-2xl flex flex-col animate-enter ring-1 ring-white/10">
             <div class="flex items-center justify-between p-4 border-b border-dark-border bg-dark-surface rounded-t-3xl z-10">
                 <h3 class="font-bold text-lg text-white tracking-tight">Discussion</h3>
-                <button onclick="closeComments()" class="w-8 h-8 rounded-full bg-dark-highlight text-gray-400 hover:text-white flex items-center justify-center active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="UI.closeComments()" class="w-8 h-8 rounded-full bg-dark-highlight text-gray-400 hover:text-white flex items-center justify-center active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="commentsContainer" class="flex-1 overflow-y-auto p-4 space-y-4 overscroll-contain"></div>
         </div>
     </div>
 
     <!-- Cinema -->
-    <div id="cinema" class="fixed inset-0 z-50 bg-black hidden flex-col transition-opacity">
+    <div id="cinema" class="fixed inset-0 z-[80] bg-black hidden flex-col transition-opacity">
         <div class="absolute top-0 w-full p-4 flex justify-between z-20 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
-            <button onclick="closeCinema()" class="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white border border-white/10 hover:bg-white/20 transition active:scale-95"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="UI.closeCinema()" class="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white border border-white/10 hover:bg-white/20 transition active:scale-95"><i class="fa-solid fa-xmark"></i></button>
             <button id="dlBtn" class="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white border border-white/10 hover:bg-white/20 transition active:scale-95"><i class="fa-solid fa-download"></i></button>
         </div>
         <div id="cinemaContent" class="flex-1 overflow-y-auto snap-y-mandatory no-scrollbar w-full max-w-md mx-auto bg-black border-x border-dark-border outline-none" tabindex="0"></div>
     </div>
 
+    <!-- Settings -->
+    <div id="settingsModal" class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-dark-surface border border-dark-border w-full max-w-sm rounded-3xl shadow-2xl p-6 transform scale-100 transition-transform ring-1 ring-white/10">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-bold text-white tracking-tight">Settings</h3>
+                <button onclick="UI.toggleSettings()" class="w-8 h-8 rounded-full bg-dark-highlight flex items-center justify-center text-gray-400 hover:text-white active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-6">
+                <div>
+                    <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-3 ml-1">Accent</div>
+                    <div class="flex gap-3 justify-between bg-dark-highlight/30 p-2 rounded-xl border border-dark-border">
+                        <button onclick="App.setTheme('#FF4500')" class="w-8 h-8 rounded-full bg-[#FF4500] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
+                        <button onclick="App.setTheme('#3b82f6')" class="w-8 h-8 rounded-full bg-[#3b82f6] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
+                        <button onclick="App.setTheme('#8b5cf6')" class="w-8 h-8 rounded-full bg-[#8b5cf6] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
+                        <button onclick="App.setTheme('#10b981')" class="w-8 h-8 rounded-full bg-[#10b981] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
+                        <button onclick="App.setTheme('#ec4899')" class="w-8 h-8 rounded-full bg-[#ec4899] ring-2 ring-transparent focus:ring-white transition active:scale-90"></button>
+                    </div>
+                </div>
+                <div class="space-y-4 pt-4 border-t border-dark-border">
+                    <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
+                        <div><div class="text-sm font-semibold text-gray-200">Autoplay</div><div class="text-[10px] text-gray-500">Muted playback</div></div>
+                        <label class="switch"><input type="checkbox" id="set-auto"><span class="slider"></span></label>
+                    </div>
+                    <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
+                        <div><div class="text-sm font-semibold text-gray-200">Loop Videos</div><div class="text-[10px] text-gray-500">Replay automatically</div></div>
+                        <label class="switch"><input type="checkbox" id="set-loop"><span class="slider"></span></label>
+                    </div>
+                    <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
+                        <div><div class="text-sm font-semibold text-gray-200">Allow NSFW</div><div class="text-[10px] text-gray-500">Show 18+ content</div></div>
+                        <label class="switch"><input type="checkbox" id="set-nsfw"><span class="slider"></span></label>
+                    </div>
+                    <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
+                        <div><div class="text-sm font-semibold text-gray-200">Hide Broken</div><div class="text-[10px] text-gray-500">Remove 404s</div></div>
+                        <label class="switch"><input type="checkbox" id="set-broken"><span class="slider"></span></label>
+                    </div>
+                    <div class="flex justify-between items-center bg-dark-highlight/20 p-3 rounded-xl border border-dark-border/50">
+                        <div><div class="text-sm font-semibold text-gray-200">Nav Buttons</div><div class="text-[10px] text-gray-500">On-screen scroll</div></div>
+                        <label class="switch"><input type="checkbox" id="set-nav"><span class="slider"></span></label>
+                    </div>
+                </div>
+                <button onclick="App.saveSettings()" class="w-full mt-2 bg-brand hover:opacity-90 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-brand/20 active:scale-95 transform">Apply Changes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-2 rounded-full shadow-2xl font-bold text-xs transform translate-y-20 opacity-0 transition-all duration-300 z-[60] flex items-center gap-2 pointer-events-none">
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-2 rounded-full shadow-2xl font-bold text-xs transform translate-y-20 opacity-0 transition-all duration-300 z-[90] flex items-center gap-2 pointer-events-none">
         <i class="fa-solid fa-check-circle text-green-500"></i> <span id="toastMsg">Success</span>
     </div>
 
     <script>
-        // --- Core ---
-        const def = { broken: true, nsfw: false, auto: true, loop: true, theme: '#FF4500', navBtns: false };
-        let cfg = JSON.parse(localStorage.getItem('omni_cfg')) || def;
-        let history = JSON.parse(localStorage.getItem('omni_hist')) || [];
-        let saved = JSON.parse(localStorage.getItem('omni_saved')) || [];
+        /**
+         * RDDTV Engine         */
         
-        const S = { view: 'feed', target: '', isUser: false, after: null, loading: false, posts: [], muted: true };
-        
-        const el = {
-            in: document.getElementById('searchInput'), drop: document.getElementById('searchDropdown'), dropC: document.getElementById('searchContent'), clear: document.getElementById('clearSearch'),
-            feed: document.getElementById('feed'), cinema: document.getElementById('cinema'), cinemaC: document.getElementById('cinemaContent'), skel: document.getElementById('skeleton'), wel: document.getElementById('welcome'),
-            sort: document.getElementById('sortSelect'), time: document.getElementById('timeFilter'), tSel: document.getElementById('timeSelect'),
-            setMod: document.getElementById('settingsModal'), uHead: document.getElementById('contextHeader'), manNav: document.getElementById('manualNav'), main: document.getElementById('main'), goTop: document.getElementById('goTop'),
-            sEmpty: document.getElementById('savedEmpty'), commMod: document.getElementById('commentsModal'), commCont: document.getElementById('commentsContainer'), footer: document.getElementById('footer'),
-            inputs: { br: document.getElementById('set-broken'), ns: document.getElementById('set-nsfw'), au: document.getElementById('set-auto'), lp: document.getElementById('set-loop'), nv: document.getElementById('set-nav') }
+        const Config = {
+            defaults: { broken: true, nsfw: false, auto: true, loop: true, theme: '#FF4500', navBtns: false },
+            get: () => JSON.parse(localStorage.getItem('omni_cfg')) || Config.defaults,
+            save: (c) => localStorage.setItem('omni_cfg', JSON.stringify(c))
         };
 
-        // --- Init ---
-        function init() {
-            document.documentElement.style.setProperty('--brand', cfg.theme);
-            el.inputs.br.checked=cfg.broken; el.inputs.ns.checked=cfg.nsfw; el.inputs.au.checked=cfg.auto; el.inputs.lp.checked=cfg.loop; el.inputs.nv.checked=cfg.navBtns;
-            toggleNavBtns();
-
-            el.in.oninput = (e) => { el.clear.classList.toggle('hidden', !e.target.value); debounceSearch(e.target.value); };
-            el.in.onfocus = () => { el.drop.classList.remove('hidden'); if(!el.in.value) renderHistory(); };
-            el.clear.onclick = () => { el.in.value=''; el.clear.classList.add('hidden'); el.in.focus(); renderHistory(); };
+        const Data = {
+            history: JSON.parse(localStorage.getItem('omni_hist')) || [],
+            saved: JSON.parse(localStorage.getItem('omni_saved')) || [],
+            cache: {}, // Secure Cache
             
-            document.onclick = (e) => { 
-                if(!el.in.contains(e.target) && !el.drop.contains(e.target) && e.target !== el.clear) el.drop.classList.add('hidden'); 
-                if(e.target===el.setMod) toggleSettings(); if(e.target===el.commMod) closeComments();
-            };
-            document.addEventListener('keydown', handleKey);
+            addHistory: (t) => {
+                Data.history = [t, ...Data.history.filter(h=>h!==t)].slice(0,5);
+                localStorage.setItem('omni_hist', JSON.stringify(Data.history));
+            },
+            toggleSave: (id) => {
+                const p = Data.cache[id]; if (!p) return;
+                const idx = Data.saved.findIndex(x => x.id === id);
+                if(idx > -1) { Data.saved.splice(idx, 1); UI.toast('Removed from Library'); }
+                else { Data.saved.unshift(p); UI.toast('Saved to Library'); }
+                localStorage.setItem('omni_saved', JSON.stringify(Data.saved));
+                UI.updateSaveIcons(id, idx === -1);
+                if(App.state.sort === 'saved') App.loadSaved();
+            }
+        };
 
-            el.sort.onchange = () => { 
-                el.time.classList.toggle('hidden', !['top','controversial'].includes(el.sort.value)); 
-                if(el.sort.value === 'saved') loadSaved(); else if(S.target) reload(); 
-                vibrate(); 
-            };
-            el.tSel.onchange = () => { if(S.target) reload(); };
-
-            const obs = new IntersectionObserver((e)=>{ if(e[0].isIntersecting && S.after && !S.loading && el.sort.value !== 'saved') fetchPosts(); }, {rootMargin:'400px'});
-            obs.observe(document.getElementById('sentinel'));
-            el.cinemaC.onscroll = (e) => { if(S.view==='reels' && e.target.scrollTop+e.target.clientHeight >= e.target.scrollHeight-300 && S.after && !S.loading) fetchPosts(); };
-            el.main.onscroll = () => { el.goTop.classList.toggle('opacity-0', el.main.scrollTop < 500); el.goTop.classList.toggle('pointer-events-none', el.main.scrollTop < 500); };
-            
-            window.history.pushState({page: 'home'}, '', '');
-            window.onpopstate = () => { if(!el.cinema.classList.contains('hidden')) closeCinema(); else if(!el.setMod.classList.contains('hidden')) toggleSettings(); else if(!el.commMod.classList.contains('hidden')) closeComments(); };
-        }
-
-        // --- Utils ---
-        const vibrate = () => { if(navigator.vibrate) navigator.vibrate(5); }
-        const toast = (msg) => { const t=document.getElementById('toast'); document.getElementById('toastMsg').innerText=msg; t.classList.remove('translate-y-20','opacity-0'); setTimeout(()=>t.classList.add('translate-y-20','opacity-0'),2000); vibrate(); };
-        const nFmt = (n) => n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'k':n;
-        const timeAgo = (t) => {const s=Math.floor((new Date()-new Date(t*1000))/1000);return s>31536000?Math.floor(s/31536000)+'y':s>86400?Math.floor(s/86400)+'d':s>3600?Math.floor(s/3600)+'h':'now'};
-        function debounce(f,w){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f.apply(this,a),w)}}
-        function scrollToTop() { el.main.scrollTo({top:0, behavior:'smooth'}); }
-        function resetApp() { window.location.reload(); }
-        function decodeHtml(html) { const txt = document.createElement("textarea"); txt.innerHTML = html; return txt.value; }
-
-        // --- Controls ---
-        function handleKey(e) {
-            if(e.key === 'Escape') { closeCinema(); toggleSettings(); closeComments(); }
-            if(S.view === 'reels' || !el.cinema.classList.contains('hidden')) {
-                if(e.key === 'ArrowDown') navScroll(1); if(e.key === 'ArrowUp') navScroll(-1);
-                if(e.key === ' ') { e.preventDefault(); const v = document.querySelector('video:hover') || document.querySelector('video'); if(v) v.paused?v.play():v.pause(); }
-            } else if(S.view === 'feed') { if(e.key === 'ArrowDown') navScroll(1); if(e.key === 'ArrowUp') navScroll(-1); }
-        }
-        function navScroll(dir) {
-            const container = (S.view === 'reels' || !el.cinema.classList.contains('hidden')) ? el.cinemaC : el.main;
-            const amount = window.innerHeight * 0.8; container.scrollBy({ top: dir * amount, behavior: 'smooth' }); vibrate();
-        }
-        function toggleNavBtns() { el.manNav.classList.toggle('hidden', !cfg.navBtns); el.manNav.classList.toggle('flex', cfg.navBtns); }
-        function toggleAudio(v) { v.muted = !v.muted; S.muted = v.muted; if(!v.muted) document.querySelectorAll('video').forEach(vid => { if(vid !== v) vid.muted = true; }); }
-
-        // --- Settings ---
-        function toggleSettings() { if(el.setMod.classList.contains('hidden')) window.history.pushState({modal:true},'',''); el.setMod.classList.toggle('hidden'); el.setMod.classList.toggle('flex'); vibrate(); }
-        function setTheme(c) { document.documentElement.style.setProperty('--brand', c); cfg.theme = c; vibrate(); }
-        function saveSettings() {
-            const nCfg = { broken: el.inputs.br.checked, nsfw: el.inputs.ns.checked, auto: el.inputs.au.checked, loop: el.inputs.lp.checked, theme: cfg.theme, navBtns: el.inputs.nv.checked };
-            const reload = nCfg.nsfw !== cfg.nsfw || nCfg.broken !== cfg.broken; 
-            cfg=nCfg; localStorage.setItem('omni_cfg', JSON.stringify(cfg));
-            toggleSettings(); toggleNavBtns(); toast('Saved'); 
-            if(S.target && reload) reload(); else if(S.target) { document.querySelectorAll('video').forEach(v => { v.loop = cfg.loop; if(cfg.auto) v.play(); }); }
-        }
-
-        // --- Search ---
-        function renderHistory() {
-            if(!history.length){renderTrending();return;}
-            let h=`<div class="p-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-dark-surface border-b border-dark-border flex justify-between"><span>Recent</span> <span class="cursor-pointer hover:text-white" onclick="clearHist()">Clear</span></div>`;
-            h+=history.map(i=>`<div class="px-4 py-3 hover:bg-white/5 flex justify-between items-center group cursor-pointer" onclick="triggerSearch('${i}')"><div class="flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left text-gray-500"></i> <span class="text-sm font-semibold text-gray-300">${i}</span></div><button onclick="event.stopPropagation(); delHist('${i}')" class="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-xmark"></i></button></div>`).join(''); el.dropC.innerHTML=h;
-        }
-        function renderTrending() {
-            const t=['r/pics','r/gaming','r/aww','r/interestingasfuck','r/videos'];
-            let h=`<div class="p-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-dark-surface border-b border-dark-border">Trending</div>`;
-            h+=`<div class="p-3 flex flex-wrap gap-2">${t.map(i=>`<span onclick="triggerSearch('${i}')" class="px-3 py-1.5 bg-dark-highlight rounded-lg text-xs font-bold text-gray-300 hover:bg-brand hover:text-white cursor-pointer transition">${i}</span>`).join('')}</div>`; el.dropC.innerHTML=h;
-        }
-        async function doSearch(q) {
-            if(q.length<3)return;
-            try{
-                const r=await fetch(`https://www.reddit.com/subreddits/search.json?q=${q}&limit=5&include_over_18=${cfg.nsfw?'on':'off'}`); const d=await r.json();
-                let h=`<div class="p-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-dark-surface border-b border-dark-border">Results</div>`;
-                if(!d.data.children.length) h+=`<div class="p-4 text-center text-sm text-gray-500">No communities found</div>`;
-                else h+=d.data.children.map(c=>`<div onclick="triggerSearch('r/${c.data.display_name}')" class="px-4 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-3 border-b border-dark-border last:border-0 group"><div class="w-8 h-8 rounded-full bg-dark-highlight flex items-center justify-center text-white font-bold text-xs overflow-hidden group-hover:ring-2 ring-brand transition">${c.data.icon_img?`<img src="${c.data.icon_img.split('?')[0]}" class="w-full h-full object-cover">`:c.data.display_name[0].toUpperCase()}</div><div><div class="text-sm font-bold text-gray-200">r/${c.data.display_name}</div><div class="text-[10px] text-gray-500">${nFmt(c.data.subscribers)} members</div></div></div>`).join('');
-                h+=`<div onclick="triggerSearch('u/${q}')" class="px-4 py-3 bg-dark-highlight/30 hover:bg-dark-highlight cursor-pointer flex items-center gap-3 border-t border-dark-border"><div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white"><i class="fa-solid fa-user"></i></div><div><div class="text-sm font-bold text-gray-200">User: u/${q}</div><div class="text-[10px] text-gray-400">Search Profile</div></div></div>`; el.dropC.innerHTML=h;
-            }catch(e){}
-        }
-        const debounceSearch = debounce(doSearch, 400);
-        function clearHist(){history=[];localStorage.setItem('omni_hist','[]');renderTrending();vibrate();}
-        function delHist(i){history=history.filter(x=>x!==i);localStorage.setItem('omni_hist',JSON.stringify(history));renderHistory();vibrate();}
-        function triggerSearch(t){
-            el.in.value=t; el.drop.classList.add('hidden'); el.clear.classList.remove('hidden');
-            history=[t,...history.filter(h=>h!==t)].slice(0,5);localStorage.setItem('omni_hist',JSON.stringify(history));
-            S.target=t.replace(/^(r\/|u\/|user\/)/,''); S.isUser=t.startsWith('u/');
-            if(el.sort.value==='saved')el.sort.value='hot';
-            reload();
-        }
-
-        // --- Logic ---
-        function reload() { S.posts=[]; S.after=null; el.wel.classList.add('hidden'); el.feed.innerHTML=''; el.cinemaC.innerHTML=''; el.sEmpty.classList.add('hidden'); el.uHead.classList.add('hidden'); el.footer.classList.add('hidden'); fetchPosts(); fetchHeader(); vibrate(); }
-        function loadSaved() { S.posts=saved; S.after=null; el.wel.classList.add('hidden'); el.feed.innerHTML=''; el.cinemaC.innerHTML=''; if(!saved.length)el.sEmpty.classList.remove('hidden'); else {el.sEmpty.classList.add('hidden');render(saved);} vibrate(); }
-
-        async function fetchHeader() {
-            try {
-                let url = S.isUser ? `https://www.reddit.com/user/${S.target}/about.json` : `https://www.reddit.com/r/${S.target}/about.json`;
-                const r = await fetch(url); const d = await r.json(); const u = d.data;
-                let banner = (u.subreddit?.banner_img || u.banner_img || u.banner_background_image || '').split('?')[0]; if (!banner && u.mobile_banner_image) banner = u.mobile_banner_image.split('?')[0];
-                const bStyle = banner ? `style="background-image: url('${banner}')"` : 'style="background-color: #27272a"';
-                const avatar = (u.icon_img || u.community_icon || u.subreddit?.icon_img || '').split('?')[0] || 'https://www.redditstatic.com/icon.png';
-                const title = u.title || u.display_name_prefixed || u.name;
-                const statVal = nFmt(S.isUser ? u.total_karma : u.subscribers);
-                const desc = u.public_description || u.subreddit?.public_description || '';
-                el.uHead.innerHTML = `<div class="h-32 w-full bg-cover bg-center rounded-t-2xl opacity-80" ${bStyle}></div><div class="px-4 pb-4 bg-dark-surface border-x border-b border-dark-border rounded-b-2xl -mt-12 pt-14 relative"><img src="${avatar}" class="w-24 h-24 rounded-full border-4 border-dark-surface absolute -top-12 left-4 bg-black object-cover"><div class="flex justify-between items-start pl-24"><div><h2 class="text-2xl font-bold text-white truncate pr-2">${title}</h2></div><div class="text-right shrink-0"><div class="text-sm font-bold text-brand">${statVal}</div><div class="text-[10px] text-gray-500 uppercase tracking-wide">${S.isUser?'Karma':'Subs'}</div></div></div>${desc?`<div class="mt-4 text-sm text-gray-400 line-clamp-3">${decodeHtml(desc)}</div>`:''}</div>`;
-                el.uHead.classList.remove('hidden');
-            } catch(e){ el.uHead.classList.add('hidden'); }
-        }
-
-        async function fetchPosts() {
-            if(S.loading)return; S.loading=true; el.skel.classList.remove('hidden');
-            try {
-                const type = S.isUser ? `user/${S.target}/submitted` : `r/${S.target}`;
-                let url = `https://www.reddit.com/${type}/${el.sort.value}.json?limit=25&raw_json=1&sr_detail=1&after=${S.after||''}`;
-                if(['top','controversial'].includes(el.sort.value)) url += `&t=${el.tSel.value}`;
-                const r = await fetch(url); const d = await r.json();
-                if(!d.data?.children?.length) { if(!S.after) el.feed.innerHTML='<div class="text-center py-10 text-gray-500">No content found.</div>'; return; }
-                S.after = d.data.after;
-                const clean = d.data.children.map(c=>c.data).filter(p => {
-                    if(p.stickied||p.removed_by_category||p.title.includes('Removed by Reddit')) return false;
-                    if(!cfg.nsfw && p.over_18) return false;
-                    if(!p.url && !p.selftext_html) return false;
-                    return true;
+        const Utils = {
+            nFmt: (n) => n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'k':n,
+            ago: (t) => {const s=Math.floor((new Date()-new Date(t*1000))/1000);return s>31536000?Math.floor(s/31536000)+'y':s>86400?Math.floor(s/86400)+'d':s>3600?Math.floor(s/3600)+'h':'now'},
+            decode: (h) => { const p = new DOMParser(); return p.parseFromString(h, 'text/html').body.textContent || ""; },
+            vibrate: () => { if(navigator.vibrate) navigator.vibrate(5); },
+            debounce: (f,w) => {let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f.apply(this,a),w)}},
+            checkVisible: () => {
+                if(!App.cfg.auto || App.state.view !== 'feed') return;
+                document.querySelectorAll('video').forEach(v => {
+                    const r = v.getBoundingClientRect();
+                    const visible = (r.top >= 0 && r.bottom <= window.innerHeight * 0.75);
+                    if(visible) v.play().catch(()=>{}); else v.pause();
                 });
-                S.posts.push(...clean);
-                S.view === 'reels' ? renderReels(clean) : render(clean);
-                if(S.posts.length > 0) el.footer.classList.remove('hidden');
-            } catch(e){} finally { S.loading=false; el.skel.classList.add('hidden'); }
-        }
-
-        function getMedia(p) {
-            const item = p.crosspost_parent_list ? p.crosspost_parent_list[0] : p;
-            if(item.is_video && item.media?.reddit_video) return {t:'vid', s:item.media.reddit_video.fallback_url, p:item.thumbnail};
-            if(item.url.match(/\.(mp4|gifv)$/) || item.domain.includes('redgifs')) return {t:'vid', s:(item.preview?.reddit_video_preview?.fallback_url || item.url.replace('.gifv','.mp4')), p:item.thumbnail};
-            if(item.is_gallery && item.media_metadata) {
-                const k = item.gallery_data?.items.map(i=>i.media_id) || Object.keys(item.media_metadata);
-                const i = k.map(x=>item.media_metadata[x]?.s?.u?.replace(/&amp;/g,'&')).filter(Boolean);
-                if(i.length) return {t:'gal', s:i};
             }
-            if(item.url.match(/\.(jpg|jpeg|png|gif)$/)) return {t:'img', s:item.url};
-            return null;
-        }
+        };
 
-        // --- Error Handler (Smart Filtering) ---
-        function handleMediaError(el) {
-            if(cfg.broken) {
-                const card = el.closest('.bg-dark-surface') || el.closest('.aspect-square') || el.closest('.snap-center');
-                if(card) card.remove();
-            } else {
-                el.style.display = 'none';
-                el.insertAdjacentHTML('afterend', '<div class="py-10 text-center text-xs text-gray-500 bg-dark-highlight/20 rounded border border-dark-border italic">Media Unavailable</div>');
-            }
-        }
+        const UI = {
+            el: {
+                in: document.getElementById('searchInput'), drop: document.getElementById('searchDropdown'), dropC: document.getElementById('searchContent'), clear: document.getElementById('clearSearch'),
+                feed: document.getElementById('feed'), cinema: document.getElementById('cinema'), cinemaC: document.getElementById('cinemaContent'), skel: document.getElementById('skeleton'), wel: document.getElementById('welcome'),
+                sort: document.getElementById('sortSelect'), time: document.getElementById('timeFilter'), tSel: document.getElementById('timeSelect'),
+                setMod: document.getElementById('settingsModal'), uHead: document.getElementById('contextHeader'), manNav: document.getElementById('manualNav'), main: document.getElementById('main'), goTop: document.getElementById('goTop'),
+                sEmpty: document.getElementById('savedEmpty'), commMod: document.getElementById('commentsModal'), commCont: document.getElementById('commentsContainer'), footer: document.getElementById('footer'),
+                inputs: { br: document.getElementById('set-broken'), ns: document.getElementById('set-nsfw'), au: document.getElementById('set-auto'), lp: document.getElementById('set-loop'), nv: document.getElementById('set-nav') }
+            },
+            
+            toast: (msg) => {
+                const t = document.getElementById('toast'); document.getElementById('toastMsg').innerText=msg;
+                t.classList.remove('translate-y-20','opacity-0'); setTimeout(()=>t.classList.add('translate-y-20','opacity-0'),2000); Utils.vibrate();
+            },
+            
+            toggleSettings: () => { 
+                if(UI.el.setMod.classList.contains('hidden')) window.history.pushState({modal:true},'','');
+                UI.el.setMod.classList.toggle('hidden'); UI.el.setMod.classList.toggle('flex'); Utils.vibrate(); 
+            },
+            
+            closeComments: () => { UI.el.commMod.classList.add('hidden'); UI.el.commMod.classList.remove('flex'); Utils.vibrate(); },
+            
+            closeCinema: () => { 
+                if(App.state.view==='reels') App.setView('feed'); 
+                else { UI.el.cinema.classList.add('hidden'); UI.el.cinema.classList.remove('flex'); } Utils.vibrate(); 
+            },
 
-        // --- Comments ---
-        async function openComments(id, sub) {
-            if(el.commMod.classList.contains('hidden')) window.history.pushState({modal:true},'','');
-            el.commMod.classList.remove('hidden'); el.commMod.classList.add('flex');
-            el.commCont.innerHTML = '<div class="flex justify-center py-10"><div class="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin"></div></div>';
-            try {
-                const res = await fetch(`https://www.reddit.com/r/${sub}/comments/${id}.json?raw_json=1&limit=20`); const data = await res.json(); 
-                const op = data[0].data.children[0].data.author;
-                const comments = data[1].data.children;
-                if(!comments.length) { el.commCont.innerHTML = '<div class="text-center text-gray-500 py-10">No comments yet.</div>'; return; }
+            scrollToTop: () => UI.el.main.scrollTo({top:0, behavior:'smooth'}),
+
+            updateSaveIcons: (id, isSaved) => {
+                document.querySelectorAll(`.save-btn-${id}`).forEach(b => b.innerHTML = isSaved ? '<i class="fa-solid fa-bookmark text-brand"></i>' : '<i class="fa-regular fa-bookmark"></i>');
+            },
+
+            toggleNav: () => { UI.el.manNav.classList.toggle('hidden', !App.cfg.navBtns); UI.el.manNav.classList.toggle('flex', App.cfg.navBtns); }
+        };
+
+        const App = {
+            cfg: Config.get(),
+            state: { view: 'feed', target: '', isUser: false, after: null, loading: false, posts: [], muted: true, sort: 'hot' },
+            
+            init: () => {
+                document.documentElement.style.setProperty('--brand', App.cfg.theme);
+                UI.el.inputs.br.checked = App.cfg.broken; UI.el.inputs.ns.checked = App.cfg.nsfw; 
+                UI.el.inputs.au.checked = App.cfg.auto; UI.el.inputs.lp.checked = App.cfg.loop; UI.el.inputs.nv.checked = App.cfg.navBtns;
+                UI.toggleNav();
+
+                // Search
+                UI.el.in.oninput = (e) => { UI.el.clear.classList.toggle('hidden', !e.target.value); App.searchDebounce(e.target.value); };
+                UI.el.in.onfocus = () => { UI.el.drop.classList.remove('hidden'); if(!UI.el.in.value) App.renderHistory(); };
+                UI.el.clear.onclick = () => { UI.el.in.value=''; UI.el.clear.classList.add('hidden'); UI.el.in.focus(); App.renderHistory(); };
                 
-                const renderComment = (c, depth=0) => {
-                    if(c.kind !== 't1') return '';
-                    const d = c.data;
-                    const opBadge = d.author === op ? '<span class="ml-2 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">OP</span>' : '';
-                    let html = `<div class="bg-dark-highlight/30 p-3 rounded-xl border border-dark-border mb-3" style="margin-left:${depth*8}px"><div class="flex justify-between text-[10px] text-gray-500 mb-1.5"><span onclick="triggerSearch('u/${d.author}'); closeComments()" class="font-bold text-gray-300 hover:text-brand cursor-pointer">u/${d.author} ${opBadge}</span> <span>${nFmt(d.score)} • ${timeAgo(d.created_utc)}</span></div><div class="text-sm text-gray-300 md-content">${decodeHtml(d.body_html)}</div></div>`;
-                    if(d.replies && d.replies.data && d.replies.data.children) {
-                        d.replies.data.children.forEach(child => html += renderComment(child, depth+1));
-                    }
-                    return html;
+                // Global Events
+                document.onclick = (e) => { 
+                    if(!UI.el.in.contains(e.target) && !UI.el.drop.contains(e.target) && e.target !== UI.el.clear) UI.el.drop.classList.add('hidden'); 
+                    if(e.target===UI.el.setMod) UI.toggleSettings(); if(e.target===UI.el.commMod) UI.closeComments();
                 };
+                document.addEventListener('keydown', App.handleKey);
 
-                let h = ''; comments.forEach(c => h += renderComment(c));
-                el.commCont.innerHTML = h;
-            } catch(e) { el.commCont.innerHTML = '<div class="text-center text-red-500 py-4">Failed to load.</div>'; }
-            vibrate();
-        }
-        function closeComments() { el.commMod.classList.add('hidden'); el.commMod.classList.remove('flex'); vibrate(); }
+                // Filters
+                UI.el.sort.onchange = () => { 
+                    App.state.sort = UI.el.sort.value;
+                    UI.el.time.classList.toggle('hidden', !['top','controversial'].includes(App.state.sort)); 
+                    if(App.state.sort === 'saved') App.loadSaved(); else if(App.state.target) App.reload(); 
+                    Utils.vibrate(); 
+                };
+                UI.el.tSel.onchange = () => { if(App.state.target) App.reload(); };
 
-        // --- Renderers ---
-        function render(list) {
-            const frag = document.createDocumentFragment();
-            list.forEach(p => {
-                if(document.getElementById(`p-${p.id}`)) return; const m = getMedia(p); if(S.view === 'grid' && !m) return;
-                const d = document.createElement('div'); d.id = `p-${p.id}`;
-                const isS = saved.some(s => s.id === p.id); const sIcon = isS ? '<i class="fa-solid fa-bookmark text-brand"></i>' : '<i class="fa-regular fa-bookmark"></i>';
-                const subIcon = p.sr_detail?.icon_img || p.sr_detail?.community_icon || 'https://www.redditstatic.com/icon.png';
+                // Obs
+                const obs = new IntersectionObserver((e)=>{ if(e[0].isIntersecting && App.state.after && !App.state.loading && App.state.sort !== 'saved') App.fetch(); }, {rootMargin:'400px'});
+                obs.observe(document.getElementById('sentinel'));
+                UI.el.cinemaC.onscroll = (e) => { if(App.state.view==='reels' && e.target.scrollTop+e.target.clientHeight >= e.target.scrollHeight-300 && App.state.after && !App.state.loading) App.fetch(); };
+                UI.el.main.onscroll = () => { UI.el.goTop.classList.toggle('opacity-0', UI.el.main.scrollTop < 500); UI.el.goTop.classList.toggle('pointer-events-none', UI.el.main.scrollTop < 500); Utils.checkVisible(); };
+                
+                window.history.pushState({page: 'home'}, '', '');
+                window.onpopstate = () => { if(!UI.el.cinema.classList.contains('hidden')) UI.closeCinema(); else if(!UI.el.setMod.classList.contains('hidden')) UI.toggleSettings(); else if(!UI.el.commMod.classList.contains('hidden')) UI.closeComments(); };
+            },
 
-                if(S.view === 'grid') {
-                    d.className = 'aspect-square bg-dark-surface relative group overflow-hidden cursor-pointer rounded-lg border border-dark-border animate-pop';
-                    const t = p.thumbnail.startsWith('http') ? p.thumbnail : 'https://www.redditstatic.com/icon.png';
-                    d.innerHTML = `<img src="${t}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500" loading="lazy" onerror="handleMediaError(this)">`;
-                    if(m?.t==='vid') d.innerHTML += '<i class="fa-solid fa-play absolute top-2 right-2 text-white drop-shadow-md"></i>';
-                    if(m?.t==='gal') d.innerHTML += '<i class="fa-solid fa-clone absolute top-2 right-2 text-white drop-shadow-md"></i>';
-                    d.onclick = () => openCinema(p);
-                } else {
-                    d.className = 'bg-dark-surface border border-dark-border rounded-2xl overflow-hidden shadow-lg animate-slide mb-6';
-                    let h=''; const auto = cfg.auto ? 'autoplay' : '';
-                    if(m) {
-                        if(m.t==='vid') h=`<video controls ${auto} ${cfg.loop?'loop':''} ${S.muted?'muted':''} playsinline class="w-full max-h-[75vh] bg-black" poster="${m.p}" onerror="handleMediaError(this)" onvolumechange="toggleAudio(this)"><source src="${m.s}" type="video/mp4"></video>`;
-                        else if(m.t==='img') h=`<img src="${m.s}" class="w-full h-auto max-h-[75vh] object-contain bg-black/20 cursor-pointer" loading="lazy" onerror="handleMediaError(this)" onclick='openCinema(${JSON.stringify(p).replace(/'/g, "&#39;")})'>`;
-                        else if(m.t==='gal') {
-                            const imgs = m.s.map((u,i) => `<div class="snap-center min-w-full flex justify-center relative"><img src="${u}" class="max-h-[75vh] object-contain cursor-pointer" onclick='openCinema(${JSON.stringify(p).replace(/'/g, "&#39;")})' loading="lazy" onerror="handleMediaError(this)"><span class="absolute top-3 right-3 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur font-bold">${i+1}/${m.s.length}</span></div>`).join('');
-                            h=`<div class="flex overflow-x-auto snap-x-mandatory no-scrollbar bg-black/20">${imgs}</div>`;
-                        }
-                    } else if(p.selftext_html) {
-                        h = `<div class="p-4 text-sm text-gray-300 bg-dark-highlight/20 max-h-60 overflow-y-auto border-y border-dark-border leading-relaxed font-sans md-content">${decodeHtml(p.selftext_html)}</div>`;
-                    }
-                    d.innerHTML = `
-                        <div class="p-3 flex justify-between items-center bg-dark-surface">
-                            <div class="flex items-center gap-2.5">
-                                <img src="${subIcon}" class="w-8 h-8 rounded-full border border-dark-border object-cover bg-dark-highlight" onerror="this.src='https://www.redditstatic.com/icon.png'">
-                                <div><div class="text-sm font-bold text-gray-100 hover:text-brand cursor-pointer transition" onclick="triggerSearch('r/${p.subreddit}')">r/${p.subreddit}</div><div class="text-[10px] text-gray-500 cursor-pointer hover:text-brand" onclick="triggerSearch('u/${p.author}')">u/${p.author} • ${timeAgo(p.created_utc)}</div></div>
-                            </div>
-                            <button onclick="toggleSave(${JSON.stringify(p).replace(/'/g, "&#39;")}, this); event.stopPropagation()" class="save-btn-${p.id} text-gray-500 hover:text-brand transition active:scale-90">${sIcon}</button>
-                        </div>
-                        <div class="px-4 pb-3"><h2 class="text-[15px] font-bold text-white leading-snug">${p.title}</h2></div><div class="bg-black/20">${h}</div>
-                        <div class="p-3 flex justify-between items-center border-t border-dark-border bg-dark-highlight/10">
-                            <div class="flex gap-4"><span class="flex items-center gap-1.5 text-gray-400"><i class="fa-solid fa-arrow-up text-brand"></i><span class="text-xs font-bold">${nFmt(p.score)}</span></span><button onclick="openComments('${p.id}', '${p.subreddit}')" class="flex items-center gap-1.5 text-gray-400 hover:text-white transition active:scale-95"><i class="fa-regular fa-comment-alt"></i><span class="text-xs font-bold">${nFmt(p.num_comments)}</span></button></div>
-                            <button onclick="navigator.clipboard.writeText('https://reddit.com${p.permalink}'); toast('Copied')" class="text-gray-500 hover:text-white active:scale-90 transition"><i class="fa-solid fa-share-nodes"></i></button>
-                        </div>`;
+            reset: () => window.location.reload(),
+
+            handleKey: (e) => {
+                if(e.key === 'Escape') { UI.closeCinema(); UI.toggleSettings(); UI.closeComments(); }
+                if(App.state.view === 'reels' || !UI.el.cinema.classList.contains('hidden')) {
+                    if(e.key === 'ArrowDown') App.nav(1); if(e.key === 'ArrowUp') App.nav(-1);
+                    if(e.key === ' ') { e.preventDefault(); const v = document.querySelector('video:hover') || document.querySelector('video'); if(v) v.paused?v.play():v.pause(); }
+                } else if(App.state.view === 'feed') { if(e.key === 'ArrowDown') App.nav(1); if(e.key === 'ArrowUp') App.nav(-1); }
+            },
+
+            nav: (dir) => {
+                const c = (App.state.view === 'reels' || !UI.el.cinema.classList.contains('hidden')) ? UI.el.cinemaC : UI.el.main;
+                const amt = window.innerHeight * 0.8; c.scrollBy({ top: dir * amt, behavior: 'smooth' }); Utils.vibrate();
+            },
+
+            setTheme: (c) => { document.documentElement.style.setProperty('--brand', c); App.cfg.theme = c; Utils.vibrate(); },
+            
+            saveSettings: () => {
+                const nCfg = { broken: UI.el.inputs.br.checked, nsfw: UI.el.inputs.ns.checked, auto: UI.el.inputs.au.checked, loop: UI.el.inputs.lp.checked, theme: App.cfg.theme, navBtns: UI.el.inputs.nv.checked };
+                const reload = nCfg.nsfw !== App.cfg.nsfw || nCfg.broken !== App.cfg.broken; 
+                App.cfg = nCfg; Config.save(nCfg); UI.toggleSettings(); UI.toggleNav(); UI.toast('Saved'); 
+                if(App.state.target && reload) App.reload(); else if(App.state.target) { document.querySelectorAll('video').forEach(v => { v.loop = nCfg.loop; if(nCfg.auto) v.play(); }); }
+            },
+
+            searchDebounce: Utils.debounce(async (q) => {
+                if(q.length<3) return;
+                try {
+                    const r = await fetch(`https://www.reddit.com/subreddits/search.json?q=${q}&limit=5&include_over_18=${App.cfg.nsfw?'on':'off'}`);
+                    const d = await r.json();
+                    let h = `<div class="p-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-dark-surface border-b border-dark-border">Results</div>`;
+                    if(!d.data.children.length) h+=`<div class="p-4 text-center text-sm text-gray-500">No results found</div>`;
+                    else h += d.data.children.map(c => `<div onclick="App.search('r/${c.data.display_name}')" class="px-4 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-3 border-b border-dark-border last:border-0 group"><div class="w-8 h-8 rounded-full bg-dark-highlight flex items-center justify-center text-white font-bold text-xs overflow-hidden group-hover:ring-2 ring-brand transition">${c.data.icon_img?`<img src="${c.data.icon_img.split('?')[0]}" class="w-full h-full object-cover">`:c.data.display_name[0].toUpperCase()}</div><div><div class="text-sm font-bold text-gray-200">r/${c.data.display_name}</div><div class="text-[10px] text-gray-500">${Utils.nFmt(c.data.subscribers)} members</div></div></div>`).join('');
+                    h+=`<div onclick="App.search('u/${q}')" class="px-4 py-3 bg-dark-highlight/30 hover:bg-dark-highlight cursor-pointer flex items-center gap-3 border-t border-dark-border"><div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white"><i class="fa-solid fa-user"></i></div><div><div class="text-sm font-bold text-gray-200">User: u/${q}</div><div class="text-[10px] text-gray-400">Search Profile</div></div></div>`;
+                    UI.el.dropC.innerHTML = h;
+                } catch(e){}
+            }, 400),
+
+            renderHistory: () => {
+                if(!Data.history.length) { 
+                    const t=['r/pics','r/gaming','r/aww','r/interestingasfuck','r/videos'];
+                    let h=`<div class="p-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-dark-surface border-b border-dark-border">Trending</div>`;
+                    h+=`<div class="p-3 flex flex-wrap gap-2">${t.map(i=>`<span onclick="App.search('${i}')" class="px-3 py-1.5 bg-dark-highlight rounded-lg text-xs font-bold text-gray-300 hover:bg-brand hover:text-white cursor-pointer transition">${i}</span>`).join('')}</div>`;
+                    UI.el.dropC.innerHTML = h; return;
                 }
-                frag.appendChild(d);
-            }); el.feed.appendChild(frag);
-        }
+                let h = `<div class="p-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-dark-surface border-b border-dark-border flex justify-between"><span>Recent</span> <span class="cursor-pointer hover:text-white" onclick="Data.history=[]; localStorage.setItem('omni_hist','[]'); App.renderHistory()">Clear</span></div>`;
+                h += Data.history.map(i=>`<div class="px-4 py-3 hover:bg-white/5 flex justify-between items-center group cursor-pointer" onclick="App.search('${i}')"><div class="flex items-center gap-3"><i class="fa-solid fa-clock-rotate-left text-gray-500"></i> <span class="text-sm font-semibold text-gray-300">${i}</span></div><button onclick="event.stopPropagation(); Data.history=Data.history.filter(x=>x!=='${i}'); localStorage.setItem('omni_hist',JSON.stringify(Data.history)); App.renderHistory()" class="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+                UI.el.dropC.innerHTML = h;
+            },
 
-        function renderReels(list) {
-            const frag = document.createDocumentFragment(); const auto = cfg.auto ? 'autoplay' : '';
-            list.forEach(p => {
-                const m = getMedia(p); if(!m) return;
-                const d = document.createElement('div'); d.className = 'w-full h-full snap-center relative bg-black flex items-center justify-center overflow-hidden border-b border-white/5';
-                let h='';
-                if(m.t==='vid') h=`<video loop playsinline ${auto} ${cfg.loop?'loop':''} ${S.muted?'muted':''} class="max-w-full max-h-full object-contain shadow-2xl" onclick="toggleAudio(this)" onvolumechange="toggleAudio(this)" onerror="handleMediaError(this)"><source src="${m.s}" type="video/mp4"></video>`;
-                else if(m.t==='gal') {
-                    let imgs = m.s.map((u,i) => `<div class="snap-center min-w-full h-full flex items-center justify-center relative"><img src="${u}" class="max-w-full max-h-full object-contain" onerror="handleMediaError(this)"><div class="absolute top-4 right-4 bg-black/60 text-white text-xs px-3 py-1 rounded-full font-bold">${i+1}/${m.s.length}</div></div>`).join('');
-                    h=`<div class="flex overflow-x-auto snap-x-mandatory w-full h-full no-scrollbar">${imgs}</div>`;
-                } else h=`<img src="${m.s}" class="max-w-full max-h-full object-contain" onerror="handleMediaError(this)">`;
-                const isS = saved.some(s => s.id === p.id);
-                d.innerHTML = `
-                    <div class="absolute inset-0 bg-cover bg-center opacity-40 blur-3xl scale-125" style="background-image:url('${m.p||m.s}')"></div><div class="relative z-10 w-full h-full flex items-center justify-center" ondblclick="toggleSave(${JSON.stringify(p).replace(/'/g, "&#39;")})">${h}</div>
-                    <div class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-black via-black/60 to-transparent z-20 pointer-events-none">
-                        <div class="flex items-center justify-between mb-2 pointer-events-auto"><div class="bg-white/10 backdrop-blur px-2 py-0.5 rounded text-[10px] font-bold uppercase text-brand border border-white/10 cursor-pointer hover:bg-white/20 transition" onclick="closeCinema(); triggerSearch('r/${p.subreddit}')">r/${p.subreddit}</div><button onclick="toggleSave(${JSON.stringify(p).replace(/'/g, "&#39;")})" class="save-btn-${p.id} text-2xl text-white/80 hover:text-brand transition active:scale-90">${isS?'<i class="fa-solid fa-bookmark text-brand"></i>':'<i class="fa-regular fa-bookmark"></i>'}</button></div>
-                        <h2 class="text-white font-bold text-sm leading-snug line-clamp-3 drop-shadow-md mb-3">${p.title}</h2>
-                        <div class="flex gap-6 text-white items-center pointer-events-auto"><div class="flex flex-col items-center"><i class="fa-solid fa-arrow-up text-xl mb-0.5 text-brand"></i><span class="text-[10px] font-bold">${nFmt(p.score)}</span></div><button onclick="openComments('${p.id}', '${p.subreddit}')" class="flex flex-col items-center active:scale-90 transition"><i class="fa-regular fa-comment-dots text-xl mb-0.5"></i><span class="text-[10px] font-bold">${nFmt(p.num_comments)}</span></button><button onclick="navigator.clipboard.writeText('https://reddit.com${p.permalink}'); toast('Copied')" class="flex flex-col items-center ml-auto active:scale-90 transition"><i class="fa-solid fa-share text-xl mb-0.5"></i><span class="text-[10px]">Share</span></button></div>
-                    </div>`;
-                frag.appendChild(d);
-            }); el.cinemaC.appendChild(frag);
-        }
+            search: (t) => {
+                UI.el.in.value=t; UI.el.drop.classList.add('hidden'); UI.el.clear.classList.remove('hidden');
+                Data.addHistory(t);
+                App.state.target = t.replace(/^(r\/|u\/|user\/)/,''); App.state.isUser = t.startsWith('u/');
+                if(App.state.sort==='saved') { App.state.sort='hot'; UI.el.sort.value='hot'; }
+                App.reload();
+            },
 
-        // --- Interaction Logic ---
-        function toggleSave(p) {
-            const idx=saved.findIndex(x=>x.id===p.id); 
-            if(idx>-1){saved.splice(idx,1);toast('Removed');}else{saved.unshift(p);toast('Saved');}
-            localStorage.setItem('omni_saved',JSON.stringify(saved));
-            document.querySelectorAll(`.save-btn-${p.id}`).forEach(b=>b.innerHTML=idx===-1?'<i class="fa-solid fa-bookmark text-brand"></i>':'<i class="fa-regular fa-bookmark"></i>');
-            if(el.sort.value==='saved')loadSaved(); vibrate();
-        }
+            reload: () => {
+                App.state.posts=[]; App.state.after=null; Data.cache={};
+                UI.el.wel.classList.add('hidden'); UI.el.feed.innerHTML=''; UI.el.cinemaC.innerHTML=''; UI.el.sEmpty.classList.add('hidden'); UI.el.uHead.classList.add('hidden'); UI.el.footer.classList.add('hidden');
+                App.fetch(); if(App.state.isUser || App.state.target) App.fetchHeader(); Utils.vibrate();
+            },
 
-        function switchView(v) {
-            S.view=v; ['feed','grid','reels'].forEach(m=>document.getElementById(`btn-${m}`).className=m===v?"p-1.5 px-3 rounded text-xs transition-all bg-dark-highlight text-white shadow-sm":"p-1.5 px-3 rounded text-xs transition-all text-gray-500 hover:text-white");
-            document.getElementById(`btn-reels`).classList.toggle('text-brand',v==='reels');
-            if(v==='reels'){el.cinema.classList.remove('hidden');el.cinema.classList.add('flex');el.cinemaC.innerHTML='';renderReels(S.posts);el.cinemaC.focus();}
-            else{el.cinema.classList.add('hidden');el.cinema.classList.remove('flex');el.feed.className=v==='grid'?'max-w-2xl mx-auto py-4 px-1 grid grid-cols-3 gap-1':'max-w-xl mx-auto py-4 px-2 sm:px-0 space-y-6';el.feed.innerHTML='';render(S.posts);} vibrate();
-        }
+            loadSaved: () => {
+                App.state.posts=Data.saved; App.state.after=null; UI.el.wel.classList.add('hidden'); UI.el.feed.innerHTML=''; UI.el.cinemaC.innerHTML='';
+                Data.saved.forEach(p => Data.cache[p.id] = p);
+                if(!Data.saved.length) UI.el.sEmpty.classList.remove('hidden'); else { UI.el.sEmpty.classList.add('hidden'); App.render(Data.saved); }
+                Utils.vibrate();
+            },
 
-        function openCinema(p) { 
-            window.history.pushState({modal:true},'','');
-            el.cinema.classList.remove('hidden'); el.cinema.classList.add('flex'); el.cinemaC.innerHTML=''; renderReels([p]); 
-            document.getElementById('dlBtn').onclick=()=>{const m=getMedia(p);const a=document.createElement('a');a.href=m.t==='gal'?m.s[0]:m.s;a.download='media';a.target='_blank';a.click();}; 
-            el.cinemaC.focus(); vibrate(); 
-        }
-        
-        function closeCinema() { 
-            if(S.view==='reels') switchView('feed'); 
-            else { el.cinema.classList.add('hidden'); el.cinema.classList.remove('flex'); } 
-            vibrate(); 
-        }
+            fetchHeader: async () => {
+                try {
+                    let url = App.state.isUser ? `https://www.reddit.com/user/${App.state.target}/about.json` : `https://www.reddit.com/r/${App.state.target}/about.json`;
+                    const r = await fetch(url); const d = await r.json(); const u = d.data;
+                    let banner = (u.subreddit?.banner_img || u.banner_img || u.banner_background_image || '').split('?')[0]; 
+                    if (!banner && u.mobile_banner_image) banner = u.mobile_banner_image.split('?')[0];
+                    const bStyle = banner ? `style="background-image: url('${banner}')"` : 'style="background-color: #27272a"';
+                    const avatar = (u.icon_img || u.community_icon || u.subreddit?.icon_img || '').split('?')[0] || 'https://www.redditstatic.com/icon.png';
+                    const title = u.title || u.display_name_prefixed || u.name;
+                    const subtext = App.state.isUser ? 'u/' + u.name : 'r/' + u.display_name;
+                    const stat = Utils.nFmt(App.state.isUser ? u.total_karma : u.subscribers);
+                    const desc = u.public_description || u.subreddit?.public_description || '';
+                    
+                    UI.el.uHead.innerHTML = `<div class="h-32 w-full bg-cover bg-center rounded-t-2xl opacity-80" ${bStyle}></div><div class="px-4 pb-4 bg-dark-surface border-x border-b border-dark-border rounded-b-2xl -mt-12 pt-14 relative"><img src="${avatar}" class="w-24 h-24 rounded-full border-4 border-dark-surface absolute -top-12 left-4 bg-black object-cover"><div class="flex justify-between items-start pl-24"><div><h2 class="text-2xl font-bold text-white truncate pr-2">${title}</h2><p class="text-xs text-gray-500">${subtext}</p></div><div class="text-right shrink-0"><div class="text-sm font-bold text-brand">${stat}</div><div class="text-[10px] text-gray-500 uppercase tracking-wide">${App.state.isUser?'Karma':'Subs'}</div></div></div>${desc?`<div class="mt-4 text-sm text-gray-400 line-clamp-3">${Utils.decode(desc)}</div>`:''}</div>`;
+                    UI.el.uHead.classList.remove('hidden');
+                } catch(e){ UI.el.uHead.classList.add('hidden'); }
+            },
 
-        init();
+            fetch: async () => {
+                if(App.state.loading) return; App.state.loading=true; UI.el.skel.classList.remove('hidden');
+                try {
+                    const type = App.state.isUser ? `user/${App.state.target}/submitted` : `r/${App.state.target}`;
+                    let url = `https://www.reddit.com/${type}/${App.state.sort}.json?limit=25&raw_json=1&sr_detail=1&after=${App.state.after||''}`;
+                    if(['top','controversial'].includes(App.state.sort)) url += `&t=${UI.el.tSel.value}`;
+                    
+                    const r = await fetch(url); const d = await r.json();
+                    if(!d.data?.children?.length) { if(!App.state.after) UI.el.feed.innerHTML='<div class="text-center py-10 text-gray-500">No content found.</div>'; return; }
+                    
+                    App.state.after = d.data.after;
+                    const clean = d.data.children.map(c=>c.data).filter(p => {
+                        if(!p.title || p.stickied || p.removed_by_category || (p.title && p.title.includes('Removed by Reddit'))) return false;
+                        if(!App.cfg.nsfw && p.over_18) return false;
+                        if(!p.url && !p.selftext_html) return false;
+                        return true;
+                    });
+                    
+                    clean.forEach(p => Data.cache[p.id] = p);
+                    App.state.posts.push(...clean);
+                    App.state.view === 'reels' ? App.renderReels(clean) : App.render(clean);
+                    if(App.state.posts.length > 0) UI.el.footer.classList.remove('hidden');
+                } catch(e){} finally { App.state.loading=false; UI.el.skel.classList.add('hidden'); }
+            },
+
+            getMedia: (p) => {
+                const item = p.crosspost_parent_list ? p.crosspost_parent_list[0] : p;
+                if(item.is_video && item.media?.reddit_video) return {t:'vid', s:item.media.reddit_video.fallback_url, p:item.thumbnail};
+                if(item.url.match(/\.(mp4|gifv)$/) || item.domain.includes('redgifs')) return {t:'vid', s:(item.preview?.reddit_video_preview?.fallback_url || item.url.replace('.gifv','.mp4')), p:item.thumbnail};
+                if(item.is_gallery && item.media_metadata) {
+                    const k = item.gallery_data?.items.map(i=>i.media_id) || Object.keys(item.media_metadata);
+                    const i = k.map(x=>item.media_metadata[x]?.s?.u?.replace(/&amp;/g,'&')).filter(Boolean);
+                    if(i.length) return {t:'gal', s:i};
+                }
+                if(item.url.match(/\.(jpg|jpeg|png|gif)$/)) return {t:'img', s:item.url};
+                return null;
+            },
+
+            mediaError: (el) => {
+                if(App.cfg.broken) {
+                    const card = el.closest('.bg-dark-surface') || el.closest('.aspect-square') || el.closest('.snap-center');
+                    if(card) card.remove();
+                } else {
+                    el.style.display = 'none';
+                    el.insertAdjacentHTML('afterend', '<div class="py-10 text-center text-xs text-gray-500 bg-dark-highlight/20 rounded border border-dark-border italic">Media Unavailable</div>');
+                }
+            },
+
+            render: (list) => {
+                const frag = document.createDocumentFragment();
+                list.forEach(p => {
+                    if(document.getElementById(`p-${p.id}`)) return; const m = App.getMedia(p); if(App.state.view === 'grid' && !m) return;
+                    const d = document.createElement('div'); d.id = `p-${p.id}`;
+                    const isS = Data.saved.some(s => s.id === p.id); const sIcon = isS ? '<i class="fa-solid fa-bookmark text-brand"></i>' : '<i class="fa-regular fa-bookmark"></i>';
+                    const subIcon = p.sr_detail?.icon_img || p.sr_detail?.community_icon || 'https://www.redditstatic.com/icon.png';
+
+                    if(App.state.view === 'grid') {
+                        d.className = 'aspect-square bg-dark-surface relative group overflow-hidden cursor-pointer rounded-lg border border-dark-border animate-pop';
+                        const t = p.thumbnail.startsWith('http') ? p.thumbnail : 'https://www.redditstatic.com/icon.png';
+                        d.innerHTML = `<img src="${t}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500" loading="lazy" onerror="App.mediaError(this)">`;
+                        if(m?.t==='vid') d.innerHTML += '<i class="fa-solid fa-play absolute top-2 right-2 text-white drop-shadow-md"></i>';
+                        if(m?.t==='gal') d.innerHTML += '<i class="fa-solid fa-clone absolute top-2 right-2 text-white drop-shadow-md"></i>';
+                        d.onclick = () => App.openCinema(p.id);
+                    } else {
+                        d.className = 'bg-dark-surface border border-dark-border rounded-2xl overflow-hidden shadow-lg animate-enter mb-6';
+                        let h=''; 
+                        if(m) {
+                            if(m.t==='vid') h=`<video controls ${App.cfg.auto?'autoplay':''} ${App.cfg.loop?'loop':''} ${App.state.muted?'muted':''} playsinline class="feed-video w-full max-h-[75vh] bg-black" poster="${m.p}" onvolumechange="App.toggleAudio(this)" onerror="App.mediaError(this)"><source src="${m.s}" type="video/mp4"></video>`;
+                            else if(m.t==='img') h=`<img src="${m.s}" class="w-full h-auto max-h-[75vh] object-contain bg-black/20 cursor-pointer" loading="lazy" onerror="App.mediaError(this)" onclick="App.openCinema('${p.id}')">`;
+                            else if(m.t==='gal') {
+                                const imgs = m.s.map((u,i) => `<div class="snap-center min-w-full flex justify-center relative"><img src="${u}" class="max-h-[75vh] object-contain cursor-pointer" onclick='App.openCinema("${p.id}")' loading="lazy" onerror="App.mediaError(this)"><span class="absolute top-3 right-3 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur font-bold">${i+1}/${m.s.length}</span></div>`).join('');
+                                h=`<div class="flex overflow-x-auto snap-x-mandatory no-scrollbar bg-black/20">${imgs}</div>`;
+                            }
+                        } else if(p.selftext_html) {
+                            h = `<div class="p-4 text-sm text-gray-300 bg-dark-highlight/20 max-h-60 overflow-y-auto border-y border-dark-border leading-relaxed font-sans md-content">${Utils.decode(p.selftext_html)}</div>`;
+                        }
+                        d.innerHTML = `
+                            <div class="p-3 flex justify-between items-center bg-dark-surface">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="${subIcon}" class="w-8 h-8 rounded-full border border-dark-border object-cover bg-dark-highlight" onerror="this.src='https://www.redditstatic.com/icon.png'">
+                                    <div><div class="text-sm font-bold text-gray-100 hover:text-brand cursor-pointer transition" onclick="App.triggerSearch('r/${p.subreddit}')">r/${p.subreddit}</div><div class="text-[10px] text-gray-500 cursor-pointer hover:text-brand" onclick="App.triggerSearch('u/${p.author}')">u/${p.author} • ${Utils.ago(p.created_utc)}</div></div>
+                                </div>
+                                <button onclick="Data.toggleSave('${p.id}'); event.stopPropagation()" class="save-btn-${p.id} text-gray-500 hover:text-brand transition active:scale-90">${sIcon}</button>
+                            </div>
+                            <div class="px-4 pb-3"><h2 class="text-[15px] font-bold text-white leading-snug">${p.title}</h2></div><div class="bg-black/20" ondblclick="Data.toggleSave('${p.id}')">${h}</div>
+                            <div class="p-3 flex justify-between items-center border-t border-dark-border bg-dark-highlight/10">
+                                <div class="flex gap-4"><span class="flex items-center gap-1.5 text-gray-400"><i class="fa-solid fa-arrow-up text-brand"></i><span class="text-xs font-bold">${Utils.nFmt(p.score)}</span></span><button onclick="App.openComments('${p.id}', '${p.subreddit}')" class="flex items-center gap-1.5 text-gray-400 hover:text-white transition active:scale-95"><i class="fa-regular fa-comment-alt"></i><span class="text-xs font-bold">${Utils.nFmt(p.num_comments)}</span></button></div>
+                                <button onclick="navigator.clipboard.writeText('https://reddit.com${p.permalink}'); UI.toast('Copied')" class="text-gray-500 hover:text-white active:scale-90 transition"><i class="fa-solid fa-share-nodes"></i></button>
+                            </div>`;
+                    }
+                    frag.appendChild(d);
+                });
+                UI.el.feed.appendChild(frag);
+            },
+
+            renderReels: (list) => {
+                const frag = document.createDocumentFragment(); const auto = App.cfg.auto ? 'autoplay' : '';
+                list.forEach(p => {
+                    const m = App.getMedia(p); if(!m) return;
+                    const d = document.createElement('div'); d.className = 'w-full h-full snap-center relative bg-black flex items-center justify-center overflow-hidden border-b border-white/5';
+                    let h='';
+                    if(m.t==='vid') h=`<video loop playsinline ${auto} ${App.cfg.loop?'loop':''} ${App.state.muted?'muted':''} class="max-w-full max-h-full object-contain shadow-2xl" onclick="App.toggleAudio(this)" onvolumechange="App.toggleAudio(this)" onerror="App.mediaError(this)"><source src="${m.s}" type="video/mp4"></video>`;
+                    else if(m.t==='gal') {
+                        let imgs = m.s.map((u,i) => `<div class="snap-center min-w-full h-full flex items-center justify-center relative"><img src="${u}" class="max-w-full max-h-full object-contain" onerror="App.mediaError(this)"><div class="absolute top-4 right-4 bg-black/60 text-white text-xs px-3 py-1 rounded-full font-bold">${i+1}/${m.s.length}</div></div>`).join('');
+                        h=`<div class="flex overflow-x-auto snap-x-mandatory w-full h-full no-scrollbar">${imgs}</div>`;
+                    } else h=`<img src="${m.s}" class="max-w-full max-h-full object-contain" onerror="App.mediaError(this)">`;
+                    const isS = Data.saved.some(s => s.id === p.id);
+                    d.innerHTML = `
+                        <div class="absolute inset-0 bg-cover bg-center opacity-40 blur-3xl scale-125" style="background-image:url('${m.p||m.s}')"></div><div class="relative z-10 w-full h-full flex items-center justify-center" ondblclick="Data.toggleSave('${p.id}')">${h}</div>
+                        <div class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-black via-black/60 to-transparent z-20 pointer-events-none">
+                            <div class="flex items-center justify-between mb-2 pointer-events-auto"><div class="bg-white/10 backdrop-blur px-2 py-0.5 rounded text-[10px] font-bold uppercase text-brand border border-white/10 cursor-pointer hover:bg-white/20 transition" onclick="UI.closeCinema(); App.triggerSearch('r/${p.subreddit}')">r/${p.subreddit}</div><button onclick="Data.toggleSave('${p.id}')" class="save-btn-${p.id} text-2xl text-white/80 hover:text-brand transition active:scale-90">${isS?'<i class="fa-solid fa-bookmark text-brand"></i>':'<i class="fa-regular fa-bookmark"></i>'}</button></div>
+                            <h2 class="text-white font-bold text-sm leading-snug line-clamp-3 drop-shadow-md mb-3">${p.title}</h2>
+                            <div class="flex gap-6 text-white items-center pointer-events-auto"><div class="flex flex-col items-center"><i class="fa-solid fa-arrow-up text-xl mb-0.5 text-brand"></i><span class="text-[10px] font-bold">${Utils.nFmt(p.score)}</span></div><button onclick="App.openComments('${p.id}', '${p.subreddit}')" class="flex flex-col items-center active:scale-90 transition"><i class="fa-regular fa-comment-dots text-xl mb-0.5"></i><span class="text-[10px] font-bold">${Utils.nFmt(p.num_comments)}</span></button><button onclick="navigator.clipboard.writeText('https://reddit.com${p.permalink}'); UI.toast('Copied')" class="flex flex-col items-center ml-auto active:scale-90 transition"><i class="fa-solid fa-share text-xl mb-0.5"></i><span class="text-[10px]">Share</span></button></div>
+                        </div>`;
+                    frag.appendChild(d);
+                }); UI.el.cinemaC.appendChild(frag);
+            },
+
+            toggleAudio: (v) => {
+                v.muted = !v.muted; App.state.muted = v.muted;
+                if(!v.muted) document.querySelectorAll('video').forEach(vid => { if(vid !== v) vid.muted = true; });
+            },
+	    openComments: async (id, sub) => {
+                if(UI.el.commMod.classList.contains('hidden')) window.history.pushState({modal:true},'','');
+                UI.el.commMod.classList.remove('hidden'); UI.el.commMod.classList.add('flex');
+                UI.el.commCont.innerHTML = '<div class="flex justify-center py-10"><div class="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin"></div></div>';
+                try {
+                    const res = await fetch(`https://www.reddit.com/r/${sub}/comments/${id}.json?raw_json=1&limit=20`); const data = await res.json(); 
+                    const op = data[0].data.children[0].data.author;
+                    const comments = data[1].data.children;
+                    if(!comments.length) { UI.el.commCont.innerHTML = '<div class="text-center text-gray-500 py-10">No comments yet.</div>'; return; }
+                    
+                    const renderComment = (c, depth=0) => {
+                        if(c.kind !== 't1') return '';
+                        const d = c.data;
+                        const opBadge = d.author === op ? '<span class="ml-2 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">OP</span>' : '';
+                        let html = `<div class="bg-dark-highlight/30 p-3 rounded-xl border border-dark-border mb-3" style="margin-left:${depth*8}px"><div class="flex justify-between text-[10px] text-gray-500 mb-1.5"><span onclick="App.search('u/${d.author}'); UI.closeComments()" class="font-bold text-gray-300 hover:text-brand cursor-pointer">u/${d.author} ${opBadge}</span> <span>${Utils.nFmt(d.score)} • ${Utils.ago(d.created_utc)}</span></div><div class="text-sm text-gray-300 md-content">${Utils.decode(d.body_html)}</div></div>`;
+                        if(d.replies && d.replies.data && d.replies.data.children) {
+                            d.replies.data.children.forEach(child => html += renderComment(child, depth+1));
+                        }
+                        return html;
+                    };
+
+                    let h = ''; comments.forEach(c => h += renderComment(c));
+                    UI.el.commCont.innerHTML = h;
+                } catch(e) { UI.el.commCont.innerHTML = '<div class="text-center text-red-500 py-4">Failed to load.</div>'; }
+                Utils.vibrate();
+            },
+
+            toggleAudio: (v) => {
+                v.muted = !v.muted; App.state.muted = v.muted;
+                if(!v.muted) document.querySelectorAll('video').forEach(vid => { if(vid !== v) vid.muted = true; });
+            },
+
+            setView: (v) => {
+                App.state.view=v; ['feed','grid','reels'].forEach(m=>document.getElementById(`btn-${m}`).className=m===v?"p-1.5 px-3 rounded text-xs transition-all bg-dark-highlight text-white shadow-sm":"p-1.5 px-3 rounded text-xs transition-all text-gray-500 hover:text-white");
+                document.getElementById(`btn-reels`).classList.toggle('text-brand',v==='reels');
+                if(v==='reels'){UI.el.cinema.classList.remove('hidden');UI.el.cinema.classList.add('flex');UI.el.cinemaC.innerHTML='';App.renderReels(App.state.posts);UI.el.cinemaC.focus();}
+                else{UI.el.cinema.classList.add('hidden');UI.el.cinema.classList.remove('flex');UI.el.feed.className=v==='grid'?'max-w-2xl mx-auto py-4 px-1 grid grid-cols-3 gap-1':'max-w-xl mx-auto py-4 px-2 sm:px-0 space-y-6';UI.el.feed.innerHTML='';App.render(App.state.posts);}
+                Utils.vibrate();
+            },
+
+            openCinema: (id) => {
+                const p = Data.cache[id]; if (!p) return;
+                window.history.pushState({modal:true},'','');
+                UI.el.cinema.classList.remove('hidden'); UI.el.cinema.classList.add('flex'); UI.el.cinemaC.innerHTML=''; App.renderReels([p]); 
+                document.getElementById('dlBtn').onclick=()=>{const m=App.getMedia(p);const a=document.createElement('a');a.href=m.t==='gal'?m.s[0]:m.s;a.download='media';a.target='_blank';a.click();}; 
+                UI.el.cinemaC.focus(); Utils.vibrate(); 
+            }
+        };
+
+        App.init();
     </script>
 </body>
 </html>
