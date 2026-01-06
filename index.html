@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reddit Media Stream</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: '#FF4500', 
+                        dark: {
+                            bg: '#0B1416',
+                            surface: '#152024',
+                            card: '#1A272C',
+                            border: '#2C3E44'
+                        }
+                    },
+                    animation: {
+                        'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    },
+                    keyframes: {
+                        pop: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0B1416; color: #E2E8F0; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .snap-mandatory-y { scroll-snap-type: y mandatory; }
+        .snap-start { scroll-snap-align: start; }
+        .loader {
+            width: 24px; height: 24px;
+            border: 3px solid rgba(255,69,0,0.3);
+            border-top-color: #FF4500;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #FF4500;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #FF4500;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden selection:bg-brand selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border z-40 relative">
+        <div class="max-w-2xl mx-auto px-4 py-3">
+            
+            <!-- Top Row -->
+            <div class="flex items-center gap-4 mb-3">
+                <div class="text-brand text-2xl hover:animate-pulse cursor-pointer shrink-0" onclick="window.location.reload()">
+                    <i class="fa-brands fa-reddit-alien"></i>
+                </div>
+                
+                <div class="relative flex-1 group">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-brand transition-colors"></i>
+                    <input type="text" id="searchInput" placeholder="Search..." 
+                        class="w-full bg-dark-surface border border-dark-border rounded-full py-2.5 pl-10 pr-10 text-sm focus:outline-none focus:border-brand/50 transition-all text-gray-200" autocomplete="off">
+                    <div id="autocompleteDropdown" class="hidden absolute top-full mt-2 w-full bg-dark-card border border-dark-border rounded-xl shadow-2xl overflow-hidden z-50"></div>
+                </div>
+
+                <!-- Settings Button -->
+                <button onclick="toggleSettings()" class="w-9 h-9 rounded-full bg-dark-surface border border-dark-border text-gray-400 hover:text-white hover:border-gray-500 transition flex items-center justify-center">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+
+            <!-- Controls Row -->
+            <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+                <div class="flex gap-2">
+                    <div class="relative">
+                        <select id="sortSelect" class="appearance-none bg-dark-surface border border-dark-border text-xs font-semibold px-3 py-1.5 rounded-lg text-gray-300 focus:outline-none cursor-pointer hover:border-gray-500 transition-colors pr-6">
+                            <option value="hot">🔥 Hot</option>
+                            <option value="top">🏆 Top</option>
+                            <option value="new">✨ New</option>
+                            <option value="controversial">⚠️ Controversial</option>
+                            <option value="rising">📈 Rising</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 pointer-events-none"></i>
+                    </div>
+
+                    <div id="timeFilter" class="relative hidden">
+                        <select id="timeSelect" class="appearance-none bg-dark-surface border border-dark-border text-xs font-semibold px-3 py-1.5 rounded-lg text-gray-300 focus:outline-none cursor-pointer hover:border-gray-500 transition-colors pr-6">
+                            <option value="all">All Time</option>
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                            <option value="week">Week</option>
+                            <option value="day">Today</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div class="flex bg-dark-surface rounded-lg p-0.5 border border-dark-border shrink-0">
+                    <button onclick="changeView('feed')" id="view-feed" class="p-1.5 px-3 rounded-md text-xs font-bold transition-all bg-dark-border text-white shadow-sm flex items-center gap-1"><i class="fa-solid fa-list-ul"></i></button>
+                    <button onclick="changeView('grid')" id="view-grid" class="p-1.5 px-3 rounded-md text-xs font-bold transition-all text-gray-500 hover:text-white flex items-center gap-1"><i class="fa-solid fa-border-all"></i></button>
+                    <button onclick="changeView('reels')" id="view-reels" class="p-1.5 px-3 rounded-md text-xs font-bold transition-all text-gray-500 hover:text-brand flex items-center gap-1"><i class="fa-solid fa-play"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="mainContainer" class="flex-1 overflow-y-auto scroll-smooth relative">
+        <div id="welcomeScreen" class="flex flex-col items-center justify-center mt-20 px-6 opacity-60">
+            <div class="w-20 h-20 bg-dark-card rounded-full flex items-center justify-center mb-6 border border-dark-border shadow-lg">
+                <i class="fa-brands fa-reddit-alien text-4xl text-brand"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-300">Start Browsing</h2>
+            <p class="text-sm text-gray-500 mt-2 text-center max-w-xs">Enter a subreddit or user.</p>
+        </div>
+
+        <div id="contentArea" class="max-w-xl mx-auto py-4 px-2 sm:px-0 min-h-[50vh]"></div>
+        <div id="loading" class="hidden py-8 flex justify-center w-full"><div class="loader"></div></div>
+        <div id="sentinel" class="h-20"></div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-dark-card border border-dark-border w-full max-w-sm rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform" id="settingsCard">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white">Settings</h3>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Setting: Remove Broken -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-semibold text-gray-200">Remove Unavailable Media</div>
+                        <div class="text-xs text-gray-500">Hides posts if images/videos fail to load</div>
+                    </div>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="setting-hideBroken" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0"/>
+                        <label for="setting-hideBroken" class="toggle-label block overflow-hidden h-5 rounded-full bg-dark-surface border border-dark-border cursor-pointer"></label>
+                    </div>
+                </div>
+
+                <!-- Setting: NSFW -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-semibold text-gray-200">Allow NSFW</div>
+                        <div class="text-xs text-gray-500">Show 18+ content</div>
+                    </div>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="setting-nsfw" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0"/>
+                        <label for="setting-nsfw" class="toggle-label block overflow-hidden h-5 rounded-full bg-dark-surface border border-dark-border cursor-pointer"></label>
+                    </div>
+                </div>
+
+                <!-- Setting: Autoplay -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-semibold text-gray-200">Autoplay Videos</div>
+                        <div class="text-xs text-gray-500">Videos play automatically</div>
+                    </div>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="setting-autoplay" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0"/>
+                        <label for="setting-autoplay" class="toggle-label block overflow-hidden h-5 rounded-full bg-dark-surface border border-dark-border cursor-pointer"></label>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="saveAndCloseSettings()" class="w-full mt-8 bg-brand hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-colors">
+                Save Preferences
+            </button>
+        </div>
+    </div>
+
+    <!-- Reels Overlay -->
+    <div id="reelsOverlay" class="fixed inset-0 z-50 bg-black hidden flex-col">
+        <div class="absolute top-0 left-0 right-0 z-20 p-4 flex justify-between bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+            <button onclick="changeView('feed')" class="pointer-events-auto bg-white/10 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center text-white border border-white/10 hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="reelsContainer" class="flex-1 overflow-y-auto snap-mandatory-y no-scrollbar h-full w-full max-w-md mx-auto bg-black border-x border-white/5"></div>
+    </div>
+
+    <!-- JS -->
+    <script>
+        // --- State & Settings ---
+        const defaultSettings = {
+            hideBroken: true,
+            allowNSFW: true,
+            autoplay: true
+        };
+
+        let userSettings = JSON.parse(localStorage.getItem('redditStreamSettings')) || defaultSettings;
+
+        const state = {
+            view: 'feed',
+            target: '',
+            isUser: false,
+            after: null,
+            loading: false,
+            posts: []
+        };
+
+        const els = {
+            input: document.getElementById('searchInput'),
+            dropdown: document.getElementById('autocompleteDropdown'),
+            content: document.getElementById('contentArea'),
+            reelsCont: document.getElementById('reelsContainer'),
+            reelsOverlay: document.getElementById('reelsOverlay'),
+            loader: document.getElementById('loading'),
+            welcome: document.getElementById('welcomeScreen'),
+            sentinel: document.getElementById('sentinel'),
+            sort: document.getElementById('sortSelect'),
+            time: document.getElementById('timeFilter'),
+            timeSelect: document.getElementById('timeSelect'),
+            settingsModal: document.getElementById('settingsModal'),
+            inputs: {
+                broken: document.getElementById('setting-hideBroken'),
+                nsfw: document.getElementById('setting-nsfw'),
+                autoplay: document.getElementById('setting-autoplay')
+            }
+        };
+
+        // --- Init ---
+        initSettings();
+        updateTimeFilterVisibility();
+
+        // --- Settings Functions ---
+        function initSettings() {
+            els.inputs.broken.checked = userSettings.hideBroken;
+            els.inputs.nsfw.checked = userSettings.allowNSFW;
+            els.inputs.autoplay.checked = userSettings.autoplay;
+        }
+
+        function toggleSettings() {
+            const isHidden = els.settingsModal.classList.contains('hidden');
+            if(isHidden) {
+                els.settingsModal.classList.remove('hidden');
+                els.settingsModal.classList.add('flex');
+                setTimeout(() => document.getElementById('settingsCard').classList.remove('scale-95'), 10);
+            } else {
+                document.getElementById('settingsCard').classList.add('scale-95');
+                setTimeout(() => {
+                    els.settingsModal.classList.add('hidden');
+                    els.settingsModal.classList.remove('flex');
+                }, 150);
+            }
+        }
+
+        function saveAndCloseSettings() {
+            const newSettings = {
+                hideBroken: els.inputs.broken.checked,
+                allowNSFW: els.inputs.nsfw.checked,
+                autoplay: els.inputs.autoplay.checked
+            };
+
+            // Check if refresh needed
+            const needsRefresh = (newSettings.allowNSFW !== userSettings.allowNSFW);
+            
+            userSettings = newSettings;
+            localStorage.setItem('redditStreamSettings', JSON.stringify(userSettings));
+            
+            toggleSettings();
+
+            if (state.target && needsRefresh) {
+                resetAndFetch();
+            } else if (state.target) {
+                // If simple setting changed (like autoplay/broken), re-render current posts
+                els.content.innerHTML = '';
+                els.reelsCont.innerHTML = '';
+                if(state.view === 'reels') renderReels();
+                else renderStandard();
+            }
+        }
+
+        // Global Error Handler for Media
+        window.handleMediaError = function(element) {
+            if (userSettings.hideBroken) {
+                const card = element.closest('.media-card');
+                if (card) card.remove();
+            } else {
+                // Optional: Show a placeholder if not hiding
+                element.style.display = 'none';
+                element.insertAdjacentHTML('afterend', '<div class="p-4 text-center text-xs text-gray-500 bg-black/20">Media unavailable</div>');
+            }
+        };
+
+        // --- Core Logic ---
+        
+        els.input.addEventListener('input', debounce((e) => handleSearch(e.target.value), 300));
+        els.input.addEventListener('focus', () => { if(els.input.value.length > 2) els.dropdown.classList.remove('hidden'); });
+        document.addEventListener('click', (e) => {
+            if (!els.input.contains(e.target) && !els.dropdown.contains(e.target)) els.dropdown.classList.add('hidden');
+            if (e.target === els.settingsModal) toggleSettings();
+        });
+
+        els.sort.addEventListener('change', () => { updateTimeFilterVisibility(); if(state.target) resetAndFetch(); });
+        els.timeSelect.addEventListener('change', () => { if(state.target) resetAndFetch(); });
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && state.after && !state.loading) fetchData();
+        }, { rootMargin: '400px' });
+        observer.observe(els.sentinel);
+        
+        els.reelsCont.addEventListener('scroll', () => {
+             if(els.reelsCont.scrollTop + els.reelsCont.clientHeight >= els.reelsCont.scrollHeight - 400) {
+                 if(state.after && !state.loading) fetchData();
+             }
+        });
+
+        function changeView(newView) {
+            ['feed', 'grid', 'reels'].forEach(v => {
+                const btn = document.getElementById(`view-${v}`);
+                btn.className = v === newView ? 
+                    'p-1.5 px-3 rounded-md text-xs font-bold transition-all bg-dark-border text-white shadow-sm flex items-center gap-1' :
+                    'p-1.5 px-3 rounded-md text-xs font-bold transition-all text-gray-500 hover:text-white flex items-center gap-1';
+                if(v==='reels' && v===newView) btn.classList.add('text-brand');
+            });
+
+            state.view = newView;
+            if (newView === 'reels') {
+                els.reelsOverlay.classList.remove('hidden'); els.reelsOverlay.classList.add('flex');
+                renderReels();
+            } else {
+                els.reelsOverlay.classList.add('hidden'); els.reelsOverlay.classList.remove('flex');
+                els.content.className = newView === 'grid' ? 'max-w-2xl mx-auto py-4 px-1 grid grid-cols-3 gap-1' : 'max-w-xl mx-auto py-4 px-2 sm:px-0 space-y-6';
+                els.content.innerHTML = '';
+                renderStandard();
+            }
+        }
+
+        function updateTimeFilterVisibility() {
+            els.time.classList.toggle('hidden', !['top', 'controversial'].includes(els.sort.value));
+        }
+
+        async function handleSearch(query) {
+            if (query.length < 3) return els.dropdown.classList.add('hidden');
+            try {
+                const nsfwParam = userSettings.allowNSFW ? '&include_over_18=on' : '';
+                const res = await fetch(`https://www.reddit.com/subreddits/search.json?q=${query}&limit=5${nsfwParam}`);
+                const data = await res.json();
+                els.dropdown.innerHTML = '';
+                els.dropdown.classList.remove('hidden');
+                data.data.children.forEach(c => {
+                    const s = c.data;
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-3 border-b border-white/5';
+                    div.innerHTML = `<div class="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-white font-bold text-xs overflow-hidden">${s.icon_img ? `<img src="${s.icon_img.split('?')[0]}" class="w-full h-full object-cover">` : s.display_name[0].toUpperCase()}</div>
+                                     <div class="min-w-0"><div class="text-sm font-bold text-gray-200 truncate">r/${s.display_name}</div><div class="text-xs text-gray-500">${nFormatter(s.subscribers)} members</div></div>`;
+                    div.onclick = () => loadContent(`r/${s.display_name}`);
+                    els.dropdown.appendChild(div);
+                });
+            } catch(e) {}
+        }
+
+        function loadContent(target) {
+            els.input.value = target; els.dropdown.classList.add('hidden');
+            state.target = target.replace(/^(r\/|u\/|user\/)/, '');
+            state.isUser = target.startsWith('u/') || target.startsWith('user/');
+            resetAndFetch();
+        }
+
+        function resetAndFetch() {
+            state.posts = []; state.after = null;
+            els.welcome.classList.add('hidden'); els.content.innerHTML = ''; els.reelsCont.innerHTML = '';
+            fetchData();
+        }
+
+        async function fetchData() {
+            if (state.loading) return;
+            state.loading = true; els.loader.classList.remove('hidden');
+            try {
+                const type = state.isUser ? `user/${state.target}/submitted` : `r/${state.target}`;
+                let url = `https://www.reddit.com/${type}/${els.sort.value}.json?limit=25&raw_json=1&after=${state.after || ''}`;
+                if (['top', 'controversial'].includes(els.sort.value)) url += `&t=${els.timeSelect.value}`;
+                
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!data.data.children.length) return;
+
+                state.after = data.data.after;
+                // Filter NSFW if settings disable it
+                const newPosts = data.data.children.map(c => c.data)
+                    .filter(p => !p.stickied)
+                    .filter(p => userSettings.allowNSFW || !p.over_18);
+
+                state.posts = [...state.posts, ...newPosts];
+                state.view === 'reels' ? renderReels(newPosts) : renderStandard(newPosts);
+            } catch (e) { console.error(e); } 
+            finally { state.loading = false; els.loader.classList.add('hidden'); }
+        }
+
+        function getMedia(post) {
+            if (post.is_video && post.media?.reddit_video) return { type: 'video', poster: post.thumbnail, src: post.media.reddit_video.fallback_url };
+            if ((post.url.match(/\.(mp4|gifv)$/) || post.domain.includes('redgifs')) && !post.url.includes('v.redd.it')) {
+                let src = post.preview?.reddit_video_preview?.fallback_url || post.url.replace('.gifv', '.mp4');
+                return { type: 'video', poster: post.thumbnail, src: src };
+            }
+            if (post.is_gallery && post.media_metadata) {
+                const images = [];
+                const keys = post.gallery_data?.items.map(i=>i.media_id) || Object.keys(post.media_metadata);
+                keys.forEach(id => { const m = post.media_metadata[id]; if(m?.s?.u) images.push(m.s.u.replace(/&amp;/g, '&')); });
+                if(images.length) return { type: 'gallery', images: images };
+            }
+            if (post.url.match(/\.(jpg|jpeg|png|gif)$/)) return { type: 'image', src: post.url };
+            return null;
+        }
+
+        function renderStandard(postsToRender = state.posts) {
+            const fragment = document.createDocumentFragment();
+            postsToRender.forEach(post => {
+                if(document.getElementById(`post-${post.id}-${state.view}`)) return;
+                const media = getMedia(post);
+                if (state.view === 'grid' && !media) return;
+
+                const el = document.createElement('div');
+                el.className = 'media-card'; // Hook for removal
+                
+                if (state.view === 'grid') {
+                    el.className += ' aspect-square bg-dark-card relative group overflow-hidden cursor-pointer rounded-md bg-white/5';
+                    let thumb = post.thumbnail;
+                    if(!thumb || !thumb.startsWith('http')) thumb = 'https://www.redditstatic.com/icon.png';
+                    el.innerHTML = `<img src="${thumb}" onerror="handleMediaError(this)" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy">
+                                    ${media.type === 'video' ? '<div class="absolute top-1 right-1 text-white drop-shadow-md"><i class="fa-solid fa-play"></i></div>' : ''}
+                                    ${media.type === 'gallery' ? '<div class="absolute top-1 right-1 text-white drop-shadow-md"><i class="fa-solid fa-clone"></i></div>' : ''}`;
+                    el.onclick = () => window.open(`https://reddit.com${post.permalink}`, '_blank');
+                    fragment.appendChild(el);
+                    return;
+                }
+
+                el.className += ' bg-dark-card border border-dark-border rounded-xl overflow-hidden shadow-lg mb-6 animate-pop';
+                let contentHtml = '';
+                const auto = userSettings.autoplay ? 'autoplay' : '';
+
+                if (media) {
+                    if (media.type === 'video') contentHtml = `<video controls ${auto} muted playsinline preload="metadata" poster="${media.poster}" onerror="handleMediaError(this)" class="w-full max-h-[70vh] bg-black"><source src="${media.src}" type="video/mp4"></video>`;
+                    else if (media.type === 'image') contentHtml = `<img src="${media.src}" onerror="handleMediaError(this)" class="w-full h-auto max-h-[70vh] object-contain bg-black/50" loading="lazy">`;
+                    else if (media.type === 'gallery') contentHtml = `<div class="flex overflow-x-auto gallery-snap no-scrollbar bg-black/50">${media.images.map(url => `<img src="${url}" onerror="handleMediaError(this)" class="min-w-full max-h-[70vh] object-contain snap-center">`).join('')}</div>`;
+                } else if (post.selftext_html) {
+                    const txtDiv = document.createElement('div'); txtDiv.innerHTML = post.selftext_html;
+                    contentHtml = `<div class="p-4 text-sm text-gray-300 bg-dark-surface/50 max-h-60 overflow-y-auto border-y border-white/5 leading-relaxed whitespace-pre-line">${(txtDiv.textContent || "").substring(0, 600)}...</div>`;
+                }
+
+                el.innerHTML = `
+                    <div class="p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border border-white/10 flex items-center justify-center text-xs font-bold text-gray-300 overflow-hidden">${post.subreddit.substring(0,2).toUpperCase()}</div>
+                            <div class="leading-tight"><div class="text-sm font-bold text-gray-100 hover:text-brand cursor-pointer" onclick="loadContent('r/${post.subreddit}')">r/${post.subreddit}</div><div class="text-[10px] text-gray-500 font-medium">u/${post.author} • ${timeAgo(post.created_utc)}</div></div>
+                        </div>
+                        <a href="https://reddit.com${post.permalink}" target="_blank" class="text-gray-500 hover:text-white"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                    <div class="px-3 pb-3"><h2 class="text-base font-semibold text-white leading-snug">${post.title}</h2></div>
+                    <div class="bg-black/20 w-full flex justify-center">${contentHtml}</div>
+                    <div class="p-3 flex items-center justify-between border-t border-white/5 bg-dark-surface/30">
+                        <div class="flex gap-4"><div class="flex items-center gap-1.5 text-gray-400"><i class="fa-solid fa-arrow-up text-brand"></i> <span class="text-xs font-bold text-gray-300">${nFormatter(post.score)}</span></div><div class="flex items-center gap-1.5 text-gray-400"><i class="fa-regular fa-comment-alt"></i> <span class="text-xs font-bold text-gray-300">${nFormatter(post.num_comments)}</span></div></div>
+                        <button class="text-gray-500 hover:text-white" onclick="navigator.clipboard.writeText('https://reddit.com${post.permalink}')"><i class="fa-solid fa-share-nodes"></i></button>
+                    </div>`;
+                fragment.appendChild(el);
+            });
+            els.content.appendChild(fragment);
+        }
+
+        function renderReels(postsToRender = state.posts) {
+            const fragment = document.createDocumentFragment();
+            const auto = userSettings.autoplay ? 'autoplay' : '';
+            
+            postsToRender.forEach(post => {
+                const media = getMedia(post);
+                if (!media) return;
+                if(document.getElementById(`reel-${post.id}`)) return;
+
+                const el = document.createElement('div');
+                el.className = 'media-card w-full h-full snap-start relative bg-black flex items-center justify-center overflow-hidden border-b border-white/10';
+                
+                let mediaHtml = '';
+                if (media.type === 'video') mediaHtml = `<video loop playsinline muted ${auto} onerror="handleMediaError(this)" class="max-w-full max-h-full object-contain pointer-events-none sm:pointer-events-auto shadow-2xl" onclick="this.muted=!this.muted"><source src="${media.src}" type="video/mp4"></video>`;
+                else if (media.type === 'image') mediaHtml = `<img src="${media.src}" onerror="handleMediaError(this)" class="max-w-full max-h-full object-contain">`;
+                else if (media.type === 'gallery') mediaHtml = `<img src="${media.images[0]}" onerror="handleMediaError(this)" class="max-w-full max-h-full object-contain">`;
+
+                const bg = media.poster || (media.type === 'image' ? media.src : '');
+                el.innerHTML = `<div class="absolute inset-0 bg-cover bg-center opacity-30 blur-3xl scale-125" style="background-image: url('${bg}')"></div>
+                                <div class="relative z-10 w-full h-full flex items-center justify-center p-0 sm:p-4">${mediaHtml}</div>
+                                <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-20 pb-16 sm:pb-6 flex flex-col items-start gap-2">
+                                     <div class="bg-white/10 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold uppercase text-brand border border-white/10 cursor-pointer" onclick="loadContent('r/${post.subreddit}')">r/${post.subreddit}</div>
+                                     <h2 class="text-white font-bold text-sm leading-tight line-clamp-3 drop-shadow-md max-w-[90%]">${post.title}</h2>
+                                     <div class="flex items-center gap-6 text-white mt-2">
+                                        <div class="flex flex-col items-center"><i class="fa-solid fa-heart text-2xl text-white/80"></i><span class="text-[10px] font-bold mt-0.5">${nFormatter(post.score)}</span></div>
+                                        <div class="flex flex-col items-center"><i class="fa-solid fa-comment-dots text-2xl text-white/80"></i><span class="text-[10px] font-bold mt-0.5">${nFormatter(post.num_comments)}</span></div>
+                                     </div>
+                                </div>`;
+                fragment.appendChild(el);
+            });
+            els.reelsCont.appendChild(fragment);
+        }
+
+        function nFormatter(num) { return num >= 1000000 ? (num/1000000).toFixed(1)+'M' : num >= 1000 ? (num/1000).toFixed(1)+'k' : num; }
+        function timeAgo(utc) { const s = Math.floor((new Date()-new Date(utc*1000))/1000); return s>31536000?Math.floor(s/31536000)+'y':s>86400?Math.floor(s/86400)+'d':s>3600?Math.floor(s/3600)+'h':'now'; }
+        function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
+    </script>
+</body>
+</html>
